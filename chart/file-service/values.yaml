@@ -1,0 +1,58 @@
+# Default values for file-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: registry.cn-hangzhou.aliyuncs.com/choerodon-framework/file-service
+  pullPolicy: Always
+
+preJob:
+  preConfig:
+    configFile: application.yml
+    mysql:
+      host: localhost
+      port: 3306
+      database: manager_service
+      username: username
+      password: password
+
+deployment:
+  managementPort: 9091
+
+env:
+  open:
+    SPRING_CLOUD_CONFIG_ENABLED: true
+    SPRING_CLOUD_CONFIG_URI: http://localhost:8010
+    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://register-server.io-choerodon:8000/eureka/
+    SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: kafka-0.kafka-headless.kafka.svc.cluster.local:9092,kafka-1.kafka-headless.kafka.svc.cluster.local:9092,kafka-2.kafka-headless.kafka.svc.cluster.local:9092
+    SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES: zookeeper-0.zookeeper-headless.zookeeper.svc.cluster.local:2181,zookeeper-1.zookeeper-headless.zookeeper.svc.cluster.local:2181,zookeeper-2.zookeeper-headless.zookeeper.svc.cluster.local:2181
+    MINIO_ENDPOINT: http:127.0.0.1:8888/minio
+    MINIO_ACCESSKEY: accessKey
+    MINIO_SECRETKEY: secretKey
+
+service:
+  enable: false
+  type: ClusterIP
+  port: 9090
+  name: file-service
+
+metrics:
+  path: /prometheus
+  label: java-spring
+
+logs:
+  parser: java-spring
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources,such as Minikube. If you do want to specify resources,uncomment the following
+  # lines,adjust them as necessary,and remove the curly braces after 'resources:'.
+  limits:
+    # cpu: 100m
+    memory: 2Gi
+  requests:
+    # cpu: 100m
+    memory: 1Gi

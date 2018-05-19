@@ -1,0 +1,42 @@
+spring:
+  sleuth:
+    integration:
+      enabled: false
+    scheduled:
+      enabled: false
+    sampler:
+      percentage: 1.0
+  http:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 3
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+    registryFetchIntervalSeconds: 1
+hystrix:
+  shareSecurityContext: true
+  command:
+      default:
+        execution:
+          isolation:
+            thread:
+              timeoutInMilliseconds: 40000
+            timeout:
+              enabled: false
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 30000
+feign:
+  hystrix:
+    enabled: true
+minio:
+  endpoint: http:127.0.0.1:8888/minio
+  accessKey: choerodon
+  secretKey: 123456
+
