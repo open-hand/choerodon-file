@@ -1,6 +1,6 @@
 # File Service
 
-The `file-service` is built on minio server, we can use minio client to upload and delete files.
+The `file-service` is built on minio server, we can use it to upload and delete files.
 
 ## Feature
 
@@ -24,6 +24,19 @@ minio:
  
   * `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service` is required.
   * [Build the minio server](https://github.com/minio/minio)
+  * You need to config the route info on `api-gateway` like this:
+   ```java
+       zuul:
+         addHostHeader: true
+         routes:
+          
+           file:
+             path: /file/**
+             serviceId: file-service
+   ```
+  
+  Then you can use feign to invoke the `file-service`.
+  
   * The following example shows a typical Maven command to run a Spring Boot application: 
   
   ```java
