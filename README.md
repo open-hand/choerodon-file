@@ -25,6 +25,7 @@ minio:
   * `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service` is required.
   * [Build the minio server](https://github.com/minio/minio)
   * The following example shows a typical Maven command to run a Spring Boot application: 
+  
   ```java
     $ mvn spring-boot:run
   ```
