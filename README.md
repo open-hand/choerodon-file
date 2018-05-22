@@ -1,4 +1,4 @@
-# File-service
+# File-Service
 
 The file-service is built on minio server, we can use minio client to upload and delete files.
 
