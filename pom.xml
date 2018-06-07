@@ -7,10 +7,13 @@
     <parent>
         <groupId>io.choerodon</groupId>
         <artifactId>choerodon-framework-parent</artifactId>
-        <version>0.5.0.RELEASE</version>
+        <version>0.6.0.RELEASE</version>
     </parent>
 
     <artifactId>file-service</artifactId>
+    <properties>
+        <choerodon.starters.version>0.5.1.RELEASE</choerodon.starters.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -30,12 +33,12 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-swagger</artifactId>
-            <version>0.5.0.RELEASE</version>
+            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-feign-replay</artifactId>
-            <version>0.5.0.RELEASE</version>
+            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -66,7 +69,7 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-oauth-resource</artifactId>
-            <version>0.5.0.RELEASE</version>
+            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -129,7 +132,7 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-core</artifactId>
-            <version>0.5.0.RELEASE</version>
+            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>
@@ -139,7 +142,7 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-hitoa</artifactId>
-            <version>0.5.0.RELEASE</version>
+            <version>${choerodon.starters.version}</version>
         </dependency>
         <!-- test -->
         <dependency>
