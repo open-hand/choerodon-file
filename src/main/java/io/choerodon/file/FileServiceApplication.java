@@ -8,8 +8,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * Created by HuangFuqiang@choerodon.io on 2018/4/16.
- * Email: fuqianghuang01@gmail.com
+ * @author HuangFuqiang@choerodon.io
  */
 @EnableFeignClients("io.choerodon")
 @EnableChoerodonResourceServer

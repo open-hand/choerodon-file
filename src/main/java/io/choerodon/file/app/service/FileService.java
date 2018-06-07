@@ -3,8 +3,7 @@ package io.choerodon.file.app.service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Created by HuangFuqiang@choerodon.io on 2018/4/16.
- * Email: fuqianghuang01@gmail.com
+ * @author  HuangFuqiang@choerodon.io
  */
 public interface FileService {
 
