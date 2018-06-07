@@ -15,20 +15,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 /**
- * Created by HuangFuqiang@choerodon.io on 2018/4/16.
- * Email: fuqianghuang01@gmail.com
+ * @author HuangFuqiang@choerodon.io
  */
 @RestController
-@RequestMapping(value = "/v1/organization/{organizationId}/file")
 public class FileController {
 
     @Autowired
     private FileService fileService;
 
+    /**
+     * @deprecated 已过期，url不规范
+     */
     @Permission(level = ResourceLevel.ORGANIZATION)
+    @Deprecated
     @ApiOperation(value = "上传文件")
-    @RequestMapping(value = "/backetName/{backetName}", method = RequestMethod.POST)
-    public ResponseEntity<String> uploadFile(
+    @RequestMapping(value = "/v1/organization/{organizationId}/file/backetName/{backetName}", method = RequestMethod.POST)
+    public ResponseEntity<String> oldUploadFile(
             @PathVariable Long organizationId,
             @ApiParam(value = "backetName", required = true)
             @PathVariable String backetName,
@@ -41,17 +43,48 @@ public class FileController {
                 .orElseThrow(() -> new CommonException("error.file.upload"));
     }
 
+    /**
+     * @deprecated 已过期，url不规范
+     */
     @Permission(level = ResourceLevel.ORGANIZATION)
+    @Deprecated
     @ApiOperation(value = "删除文件")
-    @RequestMapping(value = "/backetName/{backetName}",method = RequestMethod.DELETE)
-    public ResponseEntity deleteFile(
+    @RequestMapping(value = "/v1/organization/{organizationId}/file/backetName/{backetName}", method = RequestMethod.DELETE)
+    public ResponseEntity oldDeleteFile(
             @PathVariable Long organizationId,
             @ApiParam(value = "backetName", required = true)
             @PathVariable String backetName,
-            @ApiParam(value = "文件地址",required = true)
-            @RequestParam String url){
-        fileService.deleteFile(backetName,url);
-        return  new ResponseEntity<>(HttpStatus.OK);
+            @ApiParam(value = "文件地址", required = true)
+            @RequestParam String url) {
+        fileService.deleteFile(backetName, url);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    @Permission(permissionLogin = true)
+    @ApiOperation(value = "上传文件")
+    @PostMapping("/v1/files")
+    public ResponseEntity<String> uploadFile(
+            @ApiParam(value = "bucket_name", required = true)
+            @RequestParam("bucket_name") String bucketName,
+            @ApiParam(value = "文件名", required = true)
+            @RequestParam("file_name") String fileName,
+            @ApiParam(value = "上传文件")
+            @RequestParam("file") MultipartFile multipartFile) {
+        return Optional.ofNullable(fileService.uploadFile(bucketName, fileName, multipartFile))
+                .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+                .orElseThrow(() -> new CommonException("error.file.upload"));
+    }
+
+    @Permission(permissionLogin = true)
+    @ApiOperation(value = "删除文件")
+    @DeleteMapping("/v1/files")
+    public ResponseEntity deleteFile(
+            @ApiParam(value = "bucket_name", required = true)
+            @RequestParam("bucket_name") String bucketName,
+            @ApiParam(value = "文件地址", required = true)
+            @RequestParam("url") String url) {
+        fileService.deleteFile(bucketName, url);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
