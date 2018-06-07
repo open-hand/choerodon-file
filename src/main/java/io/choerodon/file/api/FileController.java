@@ -61,7 +61,7 @@ public class FileController {
     }
 
 
-    @Permission(permissionLogin = true)
+    @Permission(permissionLogin = true, level = ResourceLevel.SITE)
     @ApiOperation(value = "上传文件")
     @PostMapping("/v1/files")
     public ResponseEntity<String> uploadFile(
@@ -76,7 +76,7 @@ public class FileController {
                 .orElseThrow(() -> new CommonException("error.file.upload"));
     }
 
-    @Permission(permissionLogin = true)
+    @Permission(permissionLogin = true, level = ResourceLevel.SITE)
     @ApiOperation(value = "删除文件")
     @DeleteMapping("/v1/files")
     public ResponseEntity deleteFile(
