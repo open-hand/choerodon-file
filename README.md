@@ -1,6 +1,6 @@
-# file-service
+# File Service
 
-The file service is built on minio server, we can use minio client to upload and delete files.
+The `file-service` is built on minio server, we can use it to upload and delete files.
 
 ## Feature
 
@@ -9,7 +9,9 @@ The file service is built on minio server, we can use minio client to upload and
 
 ## Requirements
 
-Before starting this server, you shoud config the minio server endpoint, accessKey and secretKey.For example:
+Before starting this server, you shoud config the minio server `endpoint`, `accessKey` and `secretKey` in the `application.yml`.
+
+For example:
 
 ```yml
 minio:
@@ -18,25 +20,41 @@ minio:
   secretKey: 123456
 ```
 
-## To get the code
-
-```
-git clone https://github.com/choerodon/file-service.git
-```
-
 ## Installation and Getting Started
  
- * Build the minio server
- * Start the framework server and file server
+  * `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service` is required.
+  * [Build the minio server](https://github.com/minio/minio)
+  * You need to config the route info on `api-gateway` like this:
+   ```java
+       zuul:
+         addHostHeader: true
+         routes:
+          
+           file:
+             path: /file/**
+             serviceId: file-service
+   ```
+  
+  Then you can use feign to invoke the `file-service`.
+  
+  * The following example shows a typical Maven command to run a Spring Boot application: 
+  
+  ```java
+    mvn spring-boot:run
+  ```
 
 ## Dependencies
 
 - io.minio
 
+## Links
+
+* [Change Log](./CHANGELOG.zh-CN.md)
+
 ## Reporting Issues
 
-If you find any shortcomings or bugs, please describe them in the Issue.
+If you find any shortcomings or bugs, please describe them in the [issue](https://github.com/choerodon/choerodon/issues/new?template=issue_template.md).
     
 ## How to Contribute
 
-Pull requests are welcome! Follow this link for more information on how to contribute.
+Pull requests are welcome! [Follow](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md) to know for more information on how to contribute.
