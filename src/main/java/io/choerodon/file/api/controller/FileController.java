@@ -1,7 +1,8 @@
-package io.choerodon.file.api;
+package io.choerodon.file.api.controller;
 
 import io.choerodon.core.exception.CommonException;
 import io.choerodon.core.iam.ResourceLevel;
+import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 import io.choerodon.swagger.annotation.Permission;
 import io.swagger.annotations.ApiOperation;
@@ -86,5 +87,21 @@ public class FileController {
             @RequestParam("url") String url) {
         fileService.deleteFile(bucketName, url);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Permission(permissionPublic = true, level = ResourceLevel.SITE)
+    @ApiOperation(value = "上传文件")
+    @PostMapping("/v1/documents")
+    public ResponseEntity<FileDTO> upload(
+            @ApiParam(value = "bucket_name", required = true)
+            @RequestParam("bucket_name") String bucketName,
+            @ApiParam(value = "文件名", required = true)
+            @RequestParam("file_name") String fileName,
+            @ApiParam(value = "上传文件")
+            @RequestParam("file") MultipartFile multipartFile) {
+        return Optional.ofNullable(fileService.uploadDocument(bucketName, fileName, multipartFile))
+                .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+                .orElseThrow(() -> new CommonException("error.file.upload"));
+
     }
 }
