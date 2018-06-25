@@ -22,6 +22,7 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
+    private static final String FILE = "file";
 
     @Value("${minio.endpoint}")
     private String endpoint;
@@ -41,11 +42,11 @@ public class FileServiceImpl implements FileService {
                 LOGGER.debug("Bucket already exists.");
             } else {
                 minioClient.makeBucket(backetName);
-                minioClient.setBucketPolicy(backetName, "", PolicyType.READ_ONLY);
+                minioClient.setBucketPolicy(backetName, FILE, PolicyType.READ_ONLY);
             }
             InputStream is = multipartFile.getInputStream();
             String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            fileName = uuid + "_" + fileName;
+            fileName = FILE + "_" + uuid + "_" + fileName;
             minioClient.putObject(backetName, fileName, is, "application/octet-stream");
             return minioClient.getObjectUrl(backetName, fileName);
         } catch (Exception e) {
@@ -88,11 +89,11 @@ public class FileServiceImpl implements FileService {
                 LOGGER.debug("Bucket already exists.");
             } else {
                 minioClient.makeBucket(bucketName);
-                minioClient.setBucketPolicy(bucketName, "", PolicyType.READ_ONLY);
+                minioClient.setBucketPolicy(bucketName, FILE, PolicyType.READ_ONLY);
             }
             InputStream inputStream = multipartFile.getInputStream();
             String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            String fileName = uuid + "_" + originFileName;
+            String fileName = FILE + "_" + uuid + "_" + originFileName;
             minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
             return new FileDTO(endpoint, originFileName, fileName);
         } catch (Exception e) {
