@@ -1,6 +1,7 @@
 package io.choerodon.file.app.service.impl;
 
 import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 import io.minio.MinioClient;
 import io.minio.policy.PolicyType;
@@ -15,12 +16,13 @@ import java.io.InputStream;
 import java.util.UUID;
 
 /**
- * @author  HuangFuqiang@choerodon.io
+ * @author HuangFuqiang@choerodon.io
  */
 @Service
 public class FileServiceImpl implements FileService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
+    private static final String FILE = "file";
 
     @Value("${minio.endpoint}")
     private String endpoint;
@@ -40,11 +42,11 @@ public class FileServiceImpl implements FileService {
                 LOGGER.debug("Bucket already exists.");
             } else {
                 minioClient.makeBucket(backetName);
-                minioClient.setBucketPolicy(backetName, "", PolicyType.READ_ONLY);
+                minioClient.setBucketPolicy(backetName, FILE, PolicyType.READ_ONLY);
             }
             InputStream is = multipartFile.getInputStream();
             String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            fileName = uuid + "_" + fileName;
+            fileName = FILE + "_" + uuid + "_" + fileName;
             minioClient.putObject(backetName, fileName, is, "application/octet-stream");
             return minioClient.getObjectUrl(backetName, fileName);
         } catch (Exception e) {
@@ -76,5 +78,27 @@ public class FileServiceImpl implements FileService {
             LOGGER.info(e.getMessage());
             throw new CommonException(e.getMessage());
         }
+    }
+
+    @Override
+    public FileDTO uploadDocument(String bucketName, String originFileName, MultipartFile multipartFile) {
+        try {
+            MinioClient minioClient = new MinioClient(endpoint, accessKey, secretKey);
+            boolean isExist = minioClient.bucketExists(bucketName);
+            if (isExist) {
+                LOGGER.debug("Bucket already exists.");
+            } else {
+                minioClient.makeBucket(bucketName);
+                minioClient.setBucketPolicy(bucketName, FILE, PolicyType.READ_ONLY);
+            }
+            InputStream inputStream = multipartFile.getInputStream();
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+            String fileName = FILE + "_" + uuid + "_" + originFileName;
+            minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
+            return new FileDTO(endpoint, originFileName, fileName);
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+        }
+        return null;
     }
 }
