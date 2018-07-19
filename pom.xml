@@ -12,7 +12,7 @@
 
     <artifactId>file-service</artifactId>
     <properties>
-        <choerodon.starters.version>0.5.3.RELEASE</choerodon.starters.version>
+        <choerodon.starters.version>0.5.4.RELEASE</choerodon.starters.version>
     </properties>
 
     <dependencies>
