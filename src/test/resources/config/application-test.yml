@@ -8,8 +8,16 @@ spring:
   stream:
     queue:
       enabled: false
+  kafka:
+    enabled: false
+
 data:
   dir: src/main/resources
 eureka:
   client:
     enabled: false
+
+hystrix:
+  stream:
+    queue:
+      enabled: false
