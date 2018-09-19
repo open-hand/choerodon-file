@@ -8,7 +8,7 @@ maven-test-branches:
   stage: mvn-package
   script:
     - git_merge master
-    - mvn package -U -DskipTests=false
+    - mvn package -U -DskipTests=true
   only:
     - branches
   except:
