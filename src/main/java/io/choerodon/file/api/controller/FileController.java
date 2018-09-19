@@ -29,6 +29,10 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
+    }
+
     @Permission(permissionLogin = true, level = ResourceLevel.SITE)
     @ApiOperation(value = "上传文件")
     @PostMapping("/v1/files")
@@ -69,6 +73,5 @@ public class FileController {
         return Optional.ofNullable(fileService.uploadDocument(bucketName, fileName, multipartFile))
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
                 .orElseThrow(() -> new CommonException("error.file.upload"));
-
     }
 }

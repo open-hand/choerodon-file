@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    bus:
+      enabled: false
+  sleuth:
+    stream:
+      enabled: false
+  stream:
+    queue:
+      enabled: false
+data:
+  dir: src/main/resources
+eureka:
+  client:
+    enabled: false
