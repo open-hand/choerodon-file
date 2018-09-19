@@ -21,23 +21,11 @@ public class FileDTO {
         return endPoint;
     }
 
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
-    }
-
     public String getOriginFileName() {
         return originFileName;
     }
 
-    public void setOriginFileName(String originFileName) {
-        this.originFileName = originFileName;
-    }
-
     public String getFileName() {
         return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 }

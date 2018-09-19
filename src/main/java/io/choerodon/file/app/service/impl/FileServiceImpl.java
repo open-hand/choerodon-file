@@ -1,19 +1,21 @@
 package io.choerodon.file.app.service.impl;
 
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
+import java.io.InputStream;
+import java.util.UUID;
+
 import io.minio.MinioClient;
 import io.minio.policy.PolicyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.util.UUID;
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -27,16 +29,16 @@ public class FileServiceImpl implements FileService {
     @Value("${minio.endpoint}")
     private String endpoint;
 
-    @Value("${minio.accessKey}")
-    private String accessKey;
+    @Autowired
+    private MinioClient minioClient;
 
-    @Value("${minio.secretKey}")
-    private String secretKey;
+    public void setMinioClient(MinioClient minioClient) {
+        this.minioClient = minioClient;
+    }
 
     @Override
     public String uploadFile(String backetName, String fileName, MultipartFile multipartFile) {
         try {
-            MinioClient minioClient = new MinioClient(endpoint, accessKey, secretKey);
             boolean isExist = minioClient.bucketExists(backetName);
             if (isExist) {
                 LOGGER.debug("Bucket already exists.");
@@ -58,7 +60,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(String backetName, String url) {
         try {
-            MinioClient minioClient = new MinioClient(endpoint, accessKey, secretKey);
             boolean isExist = minioClient.bucketExists(backetName);
             if (!isExist) {
                 throw new CommonException("error.backetName.notExist");
@@ -83,7 +84,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileDTO uploadDocument(String bucketName, String originFileName, MultipartFile multipartFile) {
         try {
-            MinioClient minioClient = new MinioClient(endpoint, accessKey, secretKey);
             boolean isExist = minioClient.bucketExists(bucketName);
             if (isExist) {
                 LOGGER.debug("Bucket already exists.");
