@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
+import io.choerodon.core.exception.FeignException;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 
@@ -52,9 +53,8 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(backetName, fileName, is, "application/octet-stream");
             return minioClient.getObjectUrl(backetName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            throw new FeignException("upload exception :: ", e);
         }
-        return null;
     }
 
     @Override
@@ -76,8 +76,7 @@ public class FileServiceImpl implements FileService {
             }
             minioClient.removeObject(backetName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
-            throw new CommonException(e.getMessage());
+            throw new FeignException("delete exception ::", e);
         }
     }
 
@@ -97,8 +96,7 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
             return new FileDTO(endpoint, originFileName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            throw new FeignException("upload exception :: ", e);
         }
-        return null;
     }
 }
