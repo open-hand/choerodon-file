@@ -53,7 +53,9 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(backetName, fileName, is, "application/octet-stream");
             return minioClient.getObjectUrl(backetName, fileName);
         } catch (Exception e) {
-            throw new FeignException("upload exception :: ", e);
+            LOGGER.error("upload exception :: {}", e);
+            return null;
+//            throw new FeignException("upload exception :: ", e);
         }
     }
 
@@ -64,7 +66,6 @@ public class FileServiceImpl implements FileService {
             if (!isExist) {
                 throw new CommonException("error.backetName.notExist");
             }
-
             String prefixUrl = endpoint + "/" + backetName + "/";
             int prefixUrlSize = prefixUrl.length();
             String fileName = url.substring(prefixUrlSize);
@@ -96,7 +97,9 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
             return new FileDTO(endpoint, originFileName, fileName);
         } catch (Exception e) {
-            throw new FeignException("upload exception :: ", e);
+            LOGGER.error("upload exception :: {}", e);
+            return null;
+//            throw new FeignException("upload exception :: ", e);
         }
     }
 }
