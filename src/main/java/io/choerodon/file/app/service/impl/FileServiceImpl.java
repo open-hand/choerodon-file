@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
+import io.choerodon.core.exception.FeignException;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 
@@ -52,9 +53,10 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(backetName, fileName, is, "application/octet-stream");
             return minioClient.getObjectUrl(backetName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error("upload exception :: {}", e);
+            return null;
+//            throw new FeignException("upload exception :: ", e);
         }
-        return null;
     }
 
     @Override
@@ -64,7 +66,6 @@ public class FileServiceImpl implements FileService {
             if (!isExist) {
                 throw new CommonException("error.backetName.notExist");
             }
-
             String prefixUrl = endpoint + "/" + backetName + "/";
             int prefixUrlSize = prefixUrl.length();
             String fileName = url.substring(prefixUrlSize);
@@ -76,8 +77,7 @@ public class FileServiceImpl implements FileService {
             }
             minioClient.removeObject(backetName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
-            throw new CommonException(e.getMessage());
+            throw new CommonException("delete exception ::", e);
         }
     }
 
@@ -97,8 +97,9 @@ public class FileServiceImpl implements FileService {
             minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
             return new FileDTO(endpoint, originFileName, fileName);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error("upload exception :: {}", e);
+            return null;
+//            throw new FeignException("upload exception :: ", e);
         }
-        return null;
     }
 }
