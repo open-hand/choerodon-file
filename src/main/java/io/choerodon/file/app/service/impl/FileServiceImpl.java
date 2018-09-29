@@ -77,7 +77,7 @@ public class FileServiceImpl implements FileService {
             }
             minioClient.removeObject(backetName, fileName);
         } catch (Exception e) {
-            throw new FeignException("delete exception ::", e);
+            throw new CommonException("delete exception ::", e);
         }
     }
 
