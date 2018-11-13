@@ -32,7 +32,7 @@ env:
     MINIO_ENDPOINT: http:127.0.0.1:8888/minio
     MINIO_ACCESSKEY: accessKey
     MINIO_SECRETKEY: secretKey
-
+    JAVA_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 service:
   enable: false
   type: ClusterIP
