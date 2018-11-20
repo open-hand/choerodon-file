@@ -70,7 +70,7 @@ class FileServiceSpec extends Specification {
         fileService.deleteFile(backetName, url)
         then:"抛出异常"
         def e = thrown(CommonException)
-        e.message=="error.backetName.notExist"
+        e.getCause().getCode()=="error.backetName.notExist"
     }
     def "DeleteFile[fileNotExist]"() {
         given:"参数准备"
@@ -82,7 +82,7 @@ class FileServiceSpec extends Specification {
         fileService.deleteFile(backetName, url)
         then:"抛出异常"
         def e1 = thrown(CommonException)
-        e1.message=="error.file.notExist"
+        e1.getCause().getCode()=="error.file.notExist"
 
         and:'参数准备'
         def url2="http://127.0.0.1:8888/backetName/fileName"
@@ -91,7 +91,7 @@ class FileServiceSpec extends Specification {
         fileService.deleteFile(backetName, url2)
         then:"抛出异常"
         def e2 = thrown(CommonException)
-        e2.message=="error.file.notExist"
+        e2.getCause().getCode()=="error.file.notExist"
     }
     def "DeleteFile"() {
         given:"参数准备"
