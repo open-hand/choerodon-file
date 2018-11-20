@@ -80,3 +80,4 @@ env.open.SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES | zookeeper地址
 env.open.MINIO_ENDPOINT | minio 地址
 env.open.MINIO_ACCESSKEY | minio 账号
 env.open.MINIO_SECRETKEY | minio 密码
+env.open.SKYWALKING_OPTS | skywalking 代理端配置
