@@ -1,10 +1,7 @@
 package io.choerodon.file.api.controller;
 
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.core.iam.ResourceLevel;
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
-import io.choerodon.swagger.annotation.Permission;
+import java.util.Optional;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
@@ -15,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import io.choerodon.core.iam.ResourceLevel;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
+import io.choerodon.file.infra.exception.FileCantUploadException;
+import io.choerodon.swagger.annotation.Permission;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -45,7 +46,7 @@ public class FileController {
             @RequestParam("file") MultipartFile multipartFile) {
         return Optional.ofNullable(fileService.uploadFile(bucketName, fileName, multipartFile))
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-                .orElseThrow(() -> new CommonException("error.file.upload"));
+                .orElseThrow(() -> new FileCantUploadException("error.file.upload"));
     }
 
     @Permission(permissionLogin = true, level = ResourceLevel.SITE)
@@ -72,6 +73,6 @@ public class FileController {
             @RequestParam("file") MultipartFile multipartFile) {
         return Optional.ofNullable(fileService.uploadDocument(bucketName, fileName, multipartFile))
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-                .orElseThrow(() -> new CommonException("error.file.upload"));
+                .orElseThrow(() -> new FileCantUploadException("error.file.upload"));
     }
 }
