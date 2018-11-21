@@ -1,8 +1,8 @@
 package io.choerodon.file.app.service.impl;
 
-import java.io.InputStream;
-import java.util.UUID;
-
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
 import io.minio.MinioClient;
 import io.minio.policy.PolicyType;
 import org.slf4j.Logger;
@@ -13,10 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.core.exception.FeignException;
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
+import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -55,7 +53,6 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             LOGGER.error("upload exception :: {}", e);
             return null;
-//            throw new FeignException("upload exception :: ", e);
         }
     }
 
@@ -99,7 +96,6 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             LOGGER.error("upload exception :: {}", e);
             return null;
-//            throw new FeignException("upload exception :: ", e);
         }
     }
 }

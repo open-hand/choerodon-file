@@ -16,4 +16,8 @@ management:
   port: 9091
   security:
     enabled: false
-
+security:
+  basic:
+    enabled: false
+  enable-csrf: false
+  ignored: /choerodon/config, /v2/choerodon/api-docs
