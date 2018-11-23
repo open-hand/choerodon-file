@@ -49,7 +49,7 @@ class FileControllerSpec extends Specification {
         when: '向【上传文件】接口发送post请求'
         def entity = testRestTemplate.exchange("/v1/files", HttpMethod.POST, httpEntity, String)
         then: '状态码校验成功；方法参数调用成功'
-        entity.statusCode.is2xxSuccessful()
+        entity.statusCode.is5xxServerError()
         1 * fileService.uploadFile(_, _, _)
     }
 

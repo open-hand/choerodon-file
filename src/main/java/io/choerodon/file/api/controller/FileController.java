@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.choerodon.core.iam.ResourceLevel;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
-import io.choerodon.file.infra.exception.FileCantUploadException;
+import io.choerodon.file.infra.exception.FileUploadException;
 import io.choerodon.swagger.annotation.Permission;
 
 /**
@@ -46,7 +46,7 @@ public class FileController {
             @RequestParam("file") MultipartFile multipartFile) {
         return Optional.ofNullable(fileService.uploadFile(bucketName, fileName, multipartFile))
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-                .orElseThrow(() -> new FileCantUploadException("error.file.upload"));
+                .orElseThrow(() -> new FileUploadException("error.file.upload.return.null"));
     }
 
     @Permission(permissionLogin = true, level = ResourceLevel.SITE)
@@ -71,8 +71,6 @@ public class FileController {
             @RequestParam("file_name") String fileName,
             @ApiParam(value = "上传文件")
             @RequestParam("file") MultipartFile multipartFile) {
-        return Optional.ofNullable(fileService.uploadDocument(bucketName, fileName, multipartFile))
-                .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-                .orElseThrow(() -> new FileCantUploadException("error.file.upload"));
+        return new ResponseEntity<>(fileService.uploadDocument(bucketName, fileName, multipartFile), HttpStatus.OK);
     }
 }
