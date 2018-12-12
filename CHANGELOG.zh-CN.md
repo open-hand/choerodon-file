@@ -2,11 +2,16 @@
 
 这个项目的所有显著变化都将被记录在这个文件中。
 
-## [0.12.0]
+## [0.12.0] - 2018-12-12
 
 ### 修改
 
 - 文件服务如果发生服务内部错误，不在抛CommonException(HttpStatus=200)，而是抛FileUploadException(HttpStatus=500)，客户端调用的时候需要做try catch操作，自行处理异常
+
+### 移除
+
+- 移除hystrix-stream依赖
+- 移除kafka依赖及相关配置
 
 ## [0.11.0] - 2018-11-13
 
