@@ -1,8 +1,8 @@
 package io.choerodon.file.app.service.impl;
 
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
-import io.choerodon.file.infra.exception.FileUploadException;
+import java.io.InputStream;
+import java.util.UUID;
+
 import io.minio.MinioClient;
 import io.minio.policy.PolicyType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.util.UUID;
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
+import io.choerodon.file.infra.exception.FileUploadException;
+import io.choerodon.file.infra.utils.ImageUtils;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -83,6 +86,16 @@ public class FileServiceImpl implements FileService {
             return new FileDTO(endpoint, originFileName, fileName);
         } catch (Exception e) {
             throw new FileUploadException("error.file.upload", e);
+        }
+    }
+
+    @Override
+    public String cutImage(MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
+        try {
+            file = ImageUtils.cutImage(file, rotate, axisX, axisY, width, height);
+            return uploadFile("file-service", file.getOriginalFilename(), file);
+        } catch (Exception e) {
+            throw new CommonException("error.cut.and.upload.image");
         }
     }
 }
