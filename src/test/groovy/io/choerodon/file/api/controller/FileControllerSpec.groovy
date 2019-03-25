@@ -45,7 +45,8 @@ class FileControllerSpec extends Specification {
 
         and: 'mock'
         fileService.uploadFile(_, _, _) >> { return null }
-        when: '向【上传文件】接口发送post请求'
+        when:
+        '向【上传文件】接口发送post请求'
         def entity = testRestTemplate.exchange("/v1/files", HttpMethod.POST, httpEntity, String)
         then: '状态码校验成功；方法参数调用成功'
         entity.statusCode.is5xxServerError()
@@ -88,5 +89,35 @@ class FileControllerSpec extends Specification {
         then: '状态码校验成功；方法参数调用成功'
         entity.statusCode.is2xxSuccessful()
         1 * fileService.uploadDocument(_, _, _)
+    }
+
+    def "CutImage"() {
+        given: '请求参数准备'
+        def file = new FileSystemResource(new File(this.class.getResource('/icon.png').toURI()))
+        def rotate = 90
+        def axisX = 100
+        def axisY = 100
+        def width = 300
+        def height = 300
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>()
+
+        param.add("rotate", rotate)
+        param.add("axisX", axisX)
+        param.add("axisY", axisY)
+        param.add("width", width)
+        param.add("height", height)
+        param.add("file", file)
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity =
+                new HttpEntity<MultiValueMap<String, Object>>(param, null)
+
+        and: 'mock'
+        fileService.cutImage(_, _, _, _, _, _) >> {return null}
+        when:
+        '向【裁切图片】接口发送post请求'
+        def entity = testRestTemplate.exchange("/v1/cut_image", HttpMethod.POST, httpEntity, Object)
+        then: '状态码校验成功；方法参数调用成功'
+        entity.statusCode.is2xxSuccessful()
+        1 * fileService.cutImage(_, _, _, _, _, _)
     }
 }

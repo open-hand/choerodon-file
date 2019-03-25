@@ -146,4 +146,25 @@ class FileServiceSpec extends Specification {
         result == null
         thrown(FileUploadException)
     }
+
+    def "CutImage[Exception]"() {
+        given: "参数准备"
+        def file = new File(this.class.getResource('/icon.png').toURI())
+        def rotate = 90
+        def axisX = 100
+        def axisY = 100
+        def width = 300
+        def height = 300
+
+        FileInputStream input = new FileInputStream(file)
+        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png", IOUtils.toByteArray(input))
+
+        and: "mock"
+        fileClient.doesBucketExist(_) >> { return false }
+        when: "方法调用"
+        def result = fileService.cutImage(multipartFile, rotate, axisX, axisY, width, height)
+        then: '无异常抛出'
+        result == null
+        thrown(FileUploadException)
+    }
 }
