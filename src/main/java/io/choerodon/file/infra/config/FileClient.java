@@ -28,6 +28,10 @@ public class FileClient {
     private boolean isAwsS3;
     private FileClientConfiguration fileClientConfig;
 
+    public FileClient() {
+
+    }
+
     public FileClient(FileClientConfiguration fileClientConfig) {
         this.fileClientConfig = fileClientConfig;
         this.isAwsS3 = fileClientConfig.getAwsS3();

@@ -166,5 +166,11 @@ class FileServiceSpec extends Specification {
         then: '无异常抛出'
         result == null
         thrown(FileUploadException)
+
+        when: "方法调用2"
+        result = fileService.cutImage(multipartFile, null, null, null, null, null)
+        then: '无异常抛出'
+        result == null
+        thrown(FileUploadException)
     }
 }
