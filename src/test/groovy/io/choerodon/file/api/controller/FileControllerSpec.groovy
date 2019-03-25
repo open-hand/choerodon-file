@@ -27,7 +27,6 @@ class FileControllerSpec extends Specification {
 
     private FileService fileService = Mock(FileService)
 
-
     def setup() {
         fileController.setFileService(fileService)
     }

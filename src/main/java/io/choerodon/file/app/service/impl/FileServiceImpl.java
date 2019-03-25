@@ -1,6 +1,5 @@
 package io.choerodon.file.app.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,22 +18,12 @@ import io.choerodon.file.infra.utils.ImageUtils;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static final String FILE = "file";
-
-    @Value("${minio.endpoint}")
-    private String endpoint;
-
-    @Value("${minio.appid:#{null}}")
-    private String appid;
-
     @Value("${spring.application.name: file-service}")
     private String applicationName;
 
-
-    @Autowired
     private FileClient fileClient;
 
-    public void setMinioClient(FileClient fileClient) {
+    public FileServiceImpl(FileClient fileClient){
         this.fileClient = fileClient;
     }
 
@@ -44,7 +33,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(String bucketName, String originFileName, MultipartFile multipartFile) {
-        bucketName = this.getBucketName(bucketName);
+        bucketName = fileClient.getBucketName(bucketName);
         if (!fileClient.doesBucketExist(bucketName)) {
             fileClient.makeBucket(bucketName);
         }
@@ -54,7 +43,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteFile(String bucketName, String url) {
-        bucketName = this.getBucketName(bucketName);
+        bucketName = fileClient.getBucketName(bucketName);
         try {
             if (fileClient.doesBucketExist(bucketName)) {
                 throw new FileUploadException("error.bucketName.notExist");
@@ -74,26 +63,20 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileDTO uploadDocument(String bucketName, String originFileName, MultipartFile multipartFile) {
-        bucketName = this.getBucketName(bucketName);
+        bucketName = fileClient.getBucketName(bucketName);
         fileClient.makeBucket(bucketName);
         String fileName = fileClient.putObject(bucketName, originFileName, multipartFile);
-        return new FileDTO(endpoint, originFileName, fileName);
+        return new FileDTO(fileClient.getFileClientConfig().getEndpoint(), originFileName, fileName);
     }
 
     @Override
     public String cutImage(MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
         try {
             file = ImageUtils.cutImage(file, rotate, axisX, axisY, width, height);
-            return uploadFile(getBucketName(applicationName), file.getOriginalFilename(), file);
+            return uploadFile(fileClient.getBucketName(applicationName), file.getOriginalFilename(), file);
         } catch (Exception e) {
             throw new CommonException("error.cut.and.upload.image");
         }
     }
 
-    private String getBucketName(String bucketName) {
-        if (appid != null) {
-            return bucketName + "-" + appid;
-        }
-        return bucketName;
-    }
 }

@@ -50,13 +50,14 @@ public class FileClient {
                 fileClientConfig.getAccessKey(), fileClientConfig.getSecretKey());
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setSignerOverride("S3SignerType");
+        String region = fileClientConfig.getRegion() == null ? fileClientConfig.US_EAST_1 : fileClientConfig.getRegion();
         this.amazonS3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withClientConfiguration(clientConfig)
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(
                                 fileClientConfig.getEndpoint(),
-                                fileClientConfig.getRegion()))
+                                region))
                 .withPathStyleAccessEnabled(fileClientConfig.getWithPath())
                 .build();
 
@@ -127,12 +128,10 @@ public class FileClient {
             } else {
                 objectUrl = this.minioClient.getObjectUrl(bucketName, fileName);
             }
-
         } catch (Exception e) {
             throw new FileUploadException("error.file.notExist", e);
-        } finally {
-            return objectUrl;
         }
+        return objectUrl;
     }
 
     public String putObject(String bucketName, String originFileName, MultipartFile multipartFile) {
@@ -149,9 +148,8 @@ public class FileClient {
             }
         } catch (Exception e) {
             throw new FileUploadException("error.file.upload", e);
-        } finally {
-            return fileName;
         }
+        return fileName;
     }
 
     public void removeObject(String bucketName, String objectName) {
@@ -172,5 +170,12 @@ public class FileClient {
             return this.fileClientConfig.getEndpoint() + "/" + bucketName + "/";
         }
         return "";
+    }
+
+    public String getBucketName(String bucketName) {
+        if (this.fileClientConfig.getAppId() != null) {
+            return bucketName + "-" + this.fileClientConfig.getAppId();
+        }
+        return bucketName;
     }
 }

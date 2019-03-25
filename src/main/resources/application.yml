@@ -32,3 +32,5 @@ minio:
   endpoint: http://127.0.0.1:8888
   accessKey: choerodon
   secretKey: 123456
+  isAwsS3: false
+  withPath: false
