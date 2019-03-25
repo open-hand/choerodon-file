@@ -82,6 +82,11 @@
             <version>3.0.10</version>
         </dependency>
         <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.520</version>
+        </dependency>
+        <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-hitoa</artifactId>
             <version>${choerodon.starters.version}</version>

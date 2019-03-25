@@ -2,6 +2,7 @@ package io.choerodon.file.app.service
 
 import io.choerodon.file.IntegrationTestConfiguration
 import io.choerodon.file.app.service.impl.FileServiceImpl
+import io.choerodon.file.infra.config.FileClient
 import io.choerodon.file.infra.exception.FileUploadException
 import io.minio.MinioClient
 import org.apache.poi.util.IOUtils
@@ -21,9 +22,11 @@ class FileServiceSpec extends Specification {
     FileServiceImpl fileService
 
     private MinioClient minioClient = Mock(MinioClient)
+    private FileClient fileClient = Mock(FileClient)
 
     void setup() {
         fileService.setMinioClient(minioClient)
+        fileService.setFileClient(fileService)
     }
 
     def "UploadFile"() {
