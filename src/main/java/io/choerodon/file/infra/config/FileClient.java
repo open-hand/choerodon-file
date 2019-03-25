@@ -50,7 +50,7 @@ public class FileClient {
                 fileClientConfig.getAccessKey(), fileClientConfig.getSecretKey());
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setSignerOverride("S3SignerType");
-        String region = fileClientConfig.getRegion() == null ? fileClientConfig.US_EAST_1 : fileClientConfig.getRegion();
+        String region = fileClientConfig.getRegion() == null ? FileClientConfiguration.US_EAST_1 : fileClientConfig.getRegion();
         this.amazonS3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withClientConfiguration(clientConfig)
