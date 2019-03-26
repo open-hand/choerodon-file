@@ -99,6 +99,14 @@ public class FileClient {
         this.fileClientConfig = fileClientConfig;
     }
 
+    public MinioClient getMinioClient() {
+        return minioClient;
+    }
+
+    public AmazonS3 getAmazonS3() {
+        return amazonS3;
+    }
+
     public boolean doesBucketExist(String bucketName) {
         try {
             if (isAwsS3) {
