@@ -11,9 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @author dengyouquan
  **/
 public class ImageUtils {
-    private ImageUtils(){
+    private ImageUtils() {
         throw new IllegalStateException("cann`t instantiation class");
     }
+
     public static MultipartFile cutImage(MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) throws java.io.IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         if (rotate != null) {

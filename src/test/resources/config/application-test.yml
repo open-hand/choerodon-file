@@ -2,14 +2,6 @@ spring:
   cloud:
     bus:
       enabled: false
-  sleuth:
-    stream:
-      enabled: false
-  stream:
-    queue:
-      enabled: false
-  kafka:
-    enabled: false
 
 data:
   dir: src/main/resources

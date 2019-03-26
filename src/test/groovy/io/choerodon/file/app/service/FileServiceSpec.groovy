@@ -2,8 +2,8 @@ package io.choerodon.file.app.service
 
 import io.choerodon.file.IntegrationTestConfiguration
 import io.choerodon.file.app.service.impl.FileServiceImpl
+import io.choerodon.file.infra.config.FileClient
 import io.choerodon.file.infra.exception.FileUploadException
-import io.minio.MinioClient
 import org.apache.poi.util.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,10 +20,10 @@ class FileServiceSpec extends Specification {
     @Autowired
     FileServiceImpl fileService
 
-    private MinioClient minioClient = Mock(MinioClient)
+    private FileClient fileClient = Mock(FileClient)
 
     void setup() {
-        fileService.setMinioClient(minioClient)
+        fileService.setFileClient(fileClient)
     }
 
     def "UploadFile"() {
@@ -35,8 +35,8 @@ class FileServiceSpec extends Specification {
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input))
         def url = "xxx/xxx/testFileUpload.txt"
         and: "mock"
-        minioClient.bucketExists(_) >> { return true }
-        minioClient.getObjectUrl(_, _) >> { return url }
+        fileClient.doesBucketExist(_) >> { return true }
+        fileClient.getObjectUrl(_, _) >> { return url }
         when: "方法调用"
         def result = fileService.uploadFile(bucketName, fileName, multipartFile)
         then: '无异常抛出'
@@ -51,8 +51,8 @@ class FileServiceSpec extends Specification {
         FileInputStream input = new FileInputStream(file)
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input))
         and: "mock"
-        minioClient.bucketExists(_) >> { return false }
-        minioClient.setBucketPolicy(_, _, _) >> { throw new Exception("exception") }
+        fileClient.doesBucketExist(_) >> { return false }
+//        fileClient.setBucketPolicy(_, _, _) >> { throw new Exception("exception") }
         when: "方法调用"
         def result = fileService.uploadFile(bucketName, fileName, multipartFile)
         then: '无异常抛出'
@@ -67,7 +67,7 @@ class FileServiceSpec extends Specification {
         def bucketName = "bucketName"
         def url = "xxx/xxx/testFileUpload.txt"
         and: 'mock'
-        minioClient.bucketExists(_) >> { return false }
+        fileClient.doesBucketExist(_) >> { return false }
         when: '方法调用'
         fileService.deleteFile(bucketName, url)
         then: "抛出异常"
@@ -80,7 +80,7 @@ class FileServiceSpec extends Specification {
         def bucketName = "bucketName"
         def url = "http://127.0.0.1:8888/bucketName/"
         and: 'mock'
-        minioClient.bucketExists(_) >> { return true }
+        fileClient.doesBucketExist(_) >> { return true }
         when: '方法调用'
         fileService.deleteFile(bucketName, url)
         then: "抛出异常"
@@ -89,7 +89,7 @@ class FileServiceSpec extends Specification {
 
         and: '参数准备'
         def url2 = "http://127.0.0.1:8888/bucketName/fileName"
-        minioClient.getObject(_, _) >> { return null }
+        fileClient.getObjectUrl(_, _) >> { return null }
         when: '方法调用'
         fileService.deleteFile(bucketName, url2)
         then: "抛出异常"
@@ -104,8 +104,8 @@ class FileServiceSpec extends Specification {
         def file = new File(this.class.getResource('/testFileUpload.txt').toURI())
         def is = new FileInputStream(file)
         and: 'mock'
-        minioClient.bucketExists(_) >> { return true }
-        minioClient.getObject(_, _) >> { return is }
+        fileClient.doesBucketExist(_) >> { return true }
+        fileClient.getObjectUrl(_, _) >> { return is }
         when: '方法调用'
         fileService.deleteFile(bucketName, url)
         then: "抛出异常"
@@ -120,7 +120,7 @@ class FileServiceSpec extends Specification {
         FileInputStream input = new FileInputStream(file)
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input))
         and: "mock"
-        minioClient.bucketExists(_) >> { return true }
+        fileClient.doesBucketExist(_) >> { return true }
         when: "方法调用"
         def result = fileService.uploadDocument(bucketName, originFileName, multipartFile)
         then: '无异常抛出'
@@ -138,10 +138,37 @@ class FileServiceSpec extends Specification {
         FileInputStream input = new FileInputStream(file)
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input))
         and: "mock"
-        minioClient.bucketExists(_) >> { return false }
-        minioClient.setBucketPolicy(_, _, _) >> { throw new Exception("exception") }
+        fileClient.doesBucketExist(_) >> { return false }
+//        minioClient.setBucketPolicy(_, _, _) >> { throw new Exception("exception") }
         when: "方法调用"
         def result = fileService.uploadDocument(bucketName, originFileName, multipartFile)
+        then: '无异常抛出'
+        result == null
+        thrown(FileUploadException)
+    }
+
+    def "CutImage[Exception]"() {
+        given: "参数准备"
+        def file = new File(this.class.getResource('/icon.png').toURI())
+        def rotate = 90
+        def axisX = 100
+        def axisY = 100
+        def width = 300
+        def height = 300
+
+        FileInputStream input = new FileInputStream(file)
+        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png", IOUtils.toByteArray(input))
+
+        and: "mock"
+        fileClient.doesBucketExist(_) >> { return false }
+        when: "方法调用"
+        def result = fileService.cutImage(multipartFile, rotate, axisX, axisY, width, height)
+        then: '无异常抛出'
+        result == null
+        thrown(FileUploadException)
+
+        when: "方法调用2"
+        result = fileService.cutImage(multipartFile, null, null, null, null, null)
         then: '无异常抛出'
         result == null
         thrown(FileUploadException)

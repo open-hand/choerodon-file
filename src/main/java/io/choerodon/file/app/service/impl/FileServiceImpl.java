@@ -1,11 +1,5 @@
 package io.choerodon.file.app.service.impl;
 
-import java.io.InputStream;
-import java.util.UUID;
-
-import io.minio.MinioClient;
-import io.minio.policy.PolicyType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.choerodon.core.exception.CommonException;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
+import io.choerodon.file.infra.config.FileClient;
 import io.choerodon.file.infra.exception.FileUploadException;
 import io.choerodon.file.infra.utils.ImageUtils;
 
@@ -23,50 +18,41 @@ import io.choerodon.file.infra.utils.ImageUtils;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static final String FILE = "file";
+    @Value("${spring.application.name: file-service}")
+    private String applicationName;
 
-    @Value("${minio.endpoint}")
-    private String endpoint;
+    private FileClient fileClient;
 
-    @Autowired
-    private MinioClient minioClient;
+    public FileServiceImpl(FileClient fileClient) {
+        this.fileClient = fileClient;
+    }
 
-    public void setMinioClient(MinioClient minioClient) {
-        this.minioClient = minioClient;
+    public void setFileClient(FileClient fileClient) {
+        this.fileClient = fileClient;
     }
 
     @Override
-    public String uploadFile(String bucketName, String fileName, MultipartFile multipartFile) {
-        try {
-            if (!minioClient.bucketExists(bucketName)) {
-                minioClient.makeBucket(bucketName);
-                minioClient.setBucketPolicy(bucketName, FILE, PolicyType.READ_ONLY);
-            }
-            InputStream inputStream = multipartFile.getInputStream();
-            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            fileName = FILE + "_" + uuid + "_" + fileName;
-            minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
-            return minioClient.getObjectUrl(bucketName, fileName);
-        } catch (Exception e) {
-            throw new FileUploadException("error.file.upload", e);
+    public String uploadFile(String bucketName, String originFileName, MultipartFile multipartFile) {
+        bucketName = fileClient.getBucketName(bucketName);
+        if (!fileClient.doesBucketExist(bucketName)) {
+            fileClient.makeBucket(bucketName);
         }
+        String fileName = fileClient.putObject(bucketName, originFileName, multipartFile);
+        return fileClient.getObjectUrl(bucketName, fileName);
     }
 
     @Override
     public void deleteFile(String bucketName, String url) {
+        bucketName = fileClient.getBucketName(bucketName);
         try {
-            boolean isExist = minioClient.bucketExists(bucketName);
-            if (!isExist) {
-                throw new FileUploadException("error.bucketName.notExist");
-            }
-            String prefixUrl = endpoint + "/" + bucketName + "/";
+            String prefixUrl = fileClient.getPrefixUrl(bucketName);
             int prefixUrlSize = prefixUrl.length();
             String fileName = url.substring(prefixUrlSize);
             if (StringUtils.isEmpty(fileName)
-                    || minioClient.getObject(bucketName, fileName) == null) {
+                    || fileClient.getObjectUrl(bucketName, fileName) == null) {
                 throw new FileUploadException("error.file.notExist");
             }
-            minioClient.removeObject(bucketName, fileName);
+            fileClient.removeObject(bucketName, fileName);
         } catch (Exception e) {
             throw new FileUploadException("error.file.delete", e);
         }
@@ -74,28 +60,22 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileDTO uploadDocument(String bucketName, String originFileName, MultipartFile multipartFile) {
-        try {
-            if (!minioClient.bucketExists(bucketName)) {
-                minioClient.makeBucket(bucketName);
-                minioClient.setBucketPolicy(bucketName, FILE, PolicyType.READ_ONLY);
-            }
-            InputStream inputStream = multipartFile.getInputStream();
-            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            String fileName = FILE + "_" + uuid + "_" + originFileName;
-            minioClient.putObject(bucketName, fileName, inputStream, "application/octet-stream");
-            return new FileDTO(endpoint, originFileName, fileName);
-        } catch (Exception e) {
-            throw new FileUploadException("error.file.upload", e);
+        bucketName = fileClient.getBucketName(bucketName);
+        if (!fileClient.doesBucketExist(bucketName)) {
+            fileClient.makeBucket(bucketName);
         }
+        String fileName = fileClient.putObject(bucketName, originFileName, multipartFile);
+        return new FileDTO(fileClient.getFileClientConfig().getEndpoint(), originFileName, fileName);
     }
 
     @Override
     public String cutImage(MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
         try {
             file = ImageUtils.cutImage(file, rotate, axisX, axisY, width, height);
-            return uploadFile("file-service", file.getOriginalFilename(), file);
+            return uploadFile(fileClient.getBucketName(applicationName), file.getOriginalFilename(), file);
         } catch (Exception e) {
             throw new CommonException("error.cut.and.upload.image");
         }
     }
+
 }

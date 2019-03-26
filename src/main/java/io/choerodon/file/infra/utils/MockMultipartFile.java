@@ -41,7 +41,7 @@ public class MockMultipartFile implements MultipartFile {
     }
 
     public long getSize() {
-        return (long)this.content.length;
+        return (long) this.content.length;
     }
 
     public byte[] getBytes() {
