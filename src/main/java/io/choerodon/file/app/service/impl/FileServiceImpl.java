@@ -23,7 +23,7 @@ public class FileServiceImpl implements FileService {
 
     private FileClient fileClient;
 
-    public FileServiceImpl(FileClient fileClient){
+    public FileServiceImpl(FileClient fileClient) {
         this.fileClient = fileClient;
     }
 
@@ -45,9 +45,6 @@ public class FileServiceImpl implements FileService {
     public void deleteFile(String bucketName, String url) {
         bucketName = fileClient.getBucketName(bucketName);
         try {
-            if (fileClient.doesBucketExist(bucketName)) {
-                throw new FileUploadException("error.bucketName.notExist");
-            }
             String prefixUrl = fileClient.getPrefixUrl(bucketName);
             int prefixUrlSize = prefixUrl.length();
             String fileName = url.substring(prefixUrlSize);
@@ -64,7 +61,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileDTO uploadDocument(String bucketName, String originFileName, MultipartFile multipartFile) {
         bucketName = fileClient.getBucketName(bucketName);
-        fileClient.makeBucket(bucketName);
+        if (!fileClient.doesBucketExist(bucketName)) {
+            fileClient.makeBucket(bucketName);
+        }
         String fileName = fileClient.putObject(bucketName, originFileName, multipartFile);
         return new FileDTO(fileClient.getFileClientConfig().getEndpoint(), originFileName, fileName);
     }

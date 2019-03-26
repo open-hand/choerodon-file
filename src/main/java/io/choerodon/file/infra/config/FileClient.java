@@ -178,10 +178,7 @@ public class FileClient {
 
 
     public String getPrefixUrl(String bucketName) {
-        if (!this.fileClientConfig.getWithPath()) {
-            return this.fileClientConfig.getEndpoint() + "/" + bucketName + "/";
-        }
-        return "";
+        return this.fileClientConfig.getEndpoint() + "/" + bucketName + "/";
     }
 
     public String getBucketName(String bucketName) {

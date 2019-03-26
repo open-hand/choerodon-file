@@ -231,7 +231,7 @@ class FileClientSpec extends Specification {
         String endpoint = "http://127.0.0.1:8888"
         String accessKey = "admin"
         String secretKey = "admin"
-        when: "withPath==false"
+        when: "查询前缀"
 
         fileClientConfig = new FileClientConfiguration(endpoint, accessKey, secretKey, null, false, true)
         fileClient.setFileClientConfig(fileClientConfig)
@@ -239,13 +239,6 @@ class FileClientSpec extends Specification {
         def result = fileClient.getPrefixUrl(bucketName)
         then: "返回正确结果"
         result == endpoint + "/" + bucketName + "/"
-        when: "withPath==true"
-        fileClientConfig = new FileClientConfiguration(endpoint, accessKey, secretKey, null, true, true)
-        fileClient.setFileClientConfig(fileClientConfig)
-
-        result = fileClient.getPrefixUrl(bucketName)
-        then: "返回正确结果"
-        result == ""
     }
 
     def "GetBucketName"() {

@@ -1,10 +1,11 @@
 package io.choerodon.file.app.service;
 
-import io.choerodon.file.api.dto.FileDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.choerodon.file.api.dto.FileDTO;
+
 /**
- * @author  HuangFuqiang@choerodon.io
+ * @author HuangFuqiang@choerodon.io
  */
 public interface FileService {
 
@@ -17,11 +18,11 @@ public interface FileService {
     /**
      * 返回处理后图片url
      *
-     * @param file 图片
+     * @param file   图片
      * @param rotate 顺时针旋转的角度
-     * @param axisX 裁剪的X轴
-     * @param axisY 裁剪的Y轴
-     * @param width 裁剪的宽度
+     * @param axisX  裁剪的X轴
+     * @param axisY  裁剪的Y轴
+     * @param width  裁剪的宽度
      * @param height 裁剪的高度
      * @return
      */

@@ -53,11 +53,6 @@ public class FileClientConfiguration {
         this.isAwsS3 = isAwsS3;
     }
 
-
-    public static String getDefaultRegion() {
-        return DEFAULT_REGION;
-    }
-
     public String getEndpoint() {
         return endpoint;
     }
