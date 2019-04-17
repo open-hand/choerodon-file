@@ -74,7 +74,7 @@ public class FileServiceImpl implements FileService {
             file = ImageUtils.cutImage(file, rotate, axisX, axisY, width, height);
             return uploadFile(fileClient.getBucketName(applicationName), file.getOriginalFilename(), file);
         } catch (Exception e) {
-            throw new CommonException("error.cut.and.upload.image");
+            throw new CommonException("error.cut.and.upload.image", e);
         }
     }
 
