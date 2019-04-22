@@ -1,5 +1,7 @@
 package io.choerodon.file.app.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,9 @@ import io.choerodon.file.infra.utils.ImageUtils;
  */
 @Service
 public class FileServiceImpl implements FileService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
+
 
     @Value("${spring.application.name: file-service}")
     private String applicationName;
@@ -44,16 +49,18 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(String bucketName, String url) {
         bucketName = fileClient.getBucketName(bucketName);
+        String fileName = null;
         try {
             String prefixUrl = fileClient.getPrefixUrl(bucketName);
             int prefixUrlSize = prefixUrl.length();
-            String fileName = url.substring(prefixUrlSize);
+            fileName = url.substring(prefixUrlSize);
             if (StringUtils.isEmpty(fileName)
                     || fileClient.getObjectUrl(bucketName, fileName) == null) {
                 throw new FileUploadException("error.file.notExist");
             }
             fileClient.removeObject(bucketName, fileName);
         } catch (Exception e) {
+            LOGGER.error("delete file from file-service failed, bucketName: {}, fileName: {}", bucketName, fileName);
             throw new FileUploadException("error.file.delete", e);
         }
     }
