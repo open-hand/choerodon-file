@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: registry.cn-hangzhou.aliyuncs.com/choerodon-framework/file-service
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 preJob:
   timeout: 300
