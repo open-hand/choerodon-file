@@ -14,6 +14,7 @@
     <properties>
         <choerodon.starters.version>0.11.0.RELEASE</choerodon.starters.version>
         <choerodon.mainClass>io.choerodon.file.FileServiceApplication</choerodon.mainClass>
+        <choerodon.serviceBuild>true</choerodon.serviceBuild>
     </properties>
 
     <dependencies>
@@ -138,12 +139,6 @@
 
     <build>
         <finalName>app</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
 </project>
