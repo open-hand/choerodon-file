@@ -2,6 +2,8 @@ package io.choerodon.file.api.controller;
 
 import java.util.Optional;
 
+import io.choerodon.base.annotation.Permission;
+import io.choerodon.base.enums.ResourceType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
@@ -9,11 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.choerodon.core.iam.ResourceLevel;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 import io.choerodon.file.infra.exception.FileUploadException;
-import io.choerodon.swagger.annotation.Permission;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -31,7 +31,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @Permission(permissionLogin = true, level = ResourceLevel.SITE)
+    @Permission(permissionLogin = true, type = ResourceType.SITE)
     @ApiOperation(value = "上传文件")
     @PostMapping("/v1/files")
     public ResponseEntity<String> uploadFile(
@@ -46,7 +46,7 @@ public class FileController {
                 .orElseThrow(() -> new FileUploadException("error.file.upload.return.null"));
     }
 
-    @Permission(permissionLogin = true, level = ResourceLevel.SITE)
+    @Permission(permissionLogin = true, type = ResourceType.SITE)
     @ApiOperation(value = "删除文件")
     @DeleteMapping("/v1/files")
     public ResponseEntity deleteFile(
@@ -58,7 +58,7 @@ public class FileController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Permission(permissionPublic = true, level = ResourceLevel.SITE)
+    @Permission(permissionPublic = true, type = ResourceType.SITE)
     @ApiOperation(value = "上传文件")
     @PostMapping("/v1/documents")
     public ResponseEntity<FileDTO> upload(
@@ -71,7 +71,7 @@ public class FileController {
         return new ResponseEntity<>(fileService.uploadDocument(bucketName, fileName, multipartFile), HttpStatus.OK);
     }
 
-    @Permission(permissionPublic = true, level = ResourceLevel.SITE)
+    @Permission(permissionPublic = true, type = ResourceType.SITE)
     @ApiOperation(value = "裁切图片")
     @PostMapping("/v1/cut_image")
     public ResponseEntity<String> cutImage(@RequestPart MultipartFile file,
