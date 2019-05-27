@@ -39,7 +39,7 @@ env:
 #      -Dskywalking.agent.sample_n_per_3_secs=-1
 #      -Dskywalking.collector.backend_service=oap.skywalking:11800
 service:
-  enable: false
+  enabled: false
   type: ClusterIP
   port: 9090
   name: file-service
