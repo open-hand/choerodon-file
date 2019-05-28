@@ -12,7 +12,7 @@ preJob:
   timeout: 300
   image: registry.cn-hangzhou.aliyuncs.com/choerodon-tools/dbtool:0.6.4
   preConfig:
-    enable: true
+    enabled: true
     configFile: application.yml
     configType: k8s
     registerHost: http://register-server:8000
