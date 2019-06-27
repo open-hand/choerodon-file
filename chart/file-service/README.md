@@ -65,21 +65,31 @@ choerodon.io/metrics-path: {{ .Values.metrics.path | quote }}
 
 参数名 | 含义 
 --- |  --- 
-service.enabled | 是否创建service
-persistence.enabled | 是否启用持久化存储
-persistence.existingClaim | 绑定的pvc名称
-preJob.preConfig.enabled | 是否初始化manager_service数据库
-env.open.SPRING_DATASOURCE_URL | 数据库链接地址
-env.open.SPRING_DATASOURCE_USERNAME | 数据库用户名
-env.open.SPRING_DATASOURCE_PASSWORD | 数据库密码
-env.open.EUREKA_CLIENT_SERVICEURL_DEFAULTZONE | 注册服务地址
-env.open.SPRING_CLOUD_CONFIG_ENABLED | 启用配置中心
+replicaCount | pod运行数量
+image.repository | 镜像库地址
+image.pullPolicy | 镜像拉取策略
+preJob.timeout | job超时时间
+preJob.image | job镜像库地址
+preJob.preConfig.enabled | 是否初始manager_service数据库
+preJob.preConfig.configFile | 初始化到配置中心文件名
+preJob.preConfig.configType | 初始化到配置中心存储方式
+preJob.preConfig.registerHost | 注册中心地址
+preJob.preConfig.datasource.url | manager_service数据库连接地址
+preJob.preConfig.datasource.username | manager_service数据库用户名
+preJob.preConfig.datasource.password | manager_servic数据库密码
+deployment.managementPort | 服务管理端口
+env.open.SPRING_CLOUD_CONFIG_ENABLED | 是否启用配置中心
 env.open.SPRING_CLOUD_CONFIG_URI | 配置中心地址
+env.open.EUREKA_CLIENT_SERVICEURL_DEFAULTZONE | 注册服务地址
 env.open.MINIO_ENDPOINT | minio 地址
 env.open.MINIO_ACCESSKEY | minio 账号
 env.open.MINIO_SECRETKEY | minio 密码
-env.open.SKYWALKING_OPTS | skywalking 代理端配置
-
+env.open.SKYWALKING_OPTS | skywalking代理端配置
+metrics.path | 收集应用的指标数据路径
+metrics.group| 性能指标应用分组
+logs.parser | 日志收集格式
+resources.limits | k8s中容器能使用资源的资源最大值
+resources.requests | k8s中容器使用的最小资源需求
 
 ### skywalking 代理端配置参数对照表
 skywalking 代理端配置 | 含义 
