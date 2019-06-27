@@ -2,35 +2,54 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# pod运行数量
 replicaCount: 1
 
 image:
+  # 镜像库地址
   repository: registry.cn-hangzhou.aliyuncs.com/choerodon-framework/file-service
+  # 镜像拉取策略
   pullPolicy: IfNotPresent
 
 preJob:
+  # job超时时间
   timeout: 300
+  # job镜像库地址
   image: registry.cn-hangzhou.aliyuncs.com/choerodon-tools/dbtool:0.6.4
   preConfig:
+    # 是否初始化manager_service数据库
     enabled: true
+    # 初始化到配置中心文件名
     configFile: application.yml
+    # 初始化到配置中心存储方式
     configType: k8s
+    # 注册中心地址
     registerHost: http://register-server:8000
     datasource:
-      url: jdbc:mysql://localhost:3306/manager_service?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      # manager_service数据库连接地址
+      url: jdbc:mysql://localhost:3306/manager_service?useUnicode=true&characterEncoding=utf-8&useSSL=false&useInformationSchema=true&remarks=true
+      # manager_service数据库用户名
       username: username
+      # manager_service数据库密码
       password: password
 
 deployment:
+  # 服务管理端口
   managementPort: 9091
 
 env:
   open:
+    # 是否启用配置中心
     SPRING_CLOUD_CONFIG_ENABLED: true
+    # 配置中心地址
     SPRING_CLOUD_CONFIG_URI: http://register-server.io-choerodon:8000/
+    # 注册服务地址
     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://register-server.io-choerodon:8000/eureka/
+    # minio 地址
     MINIO_ENDPOINT: http:127.0.0.1:8888/minio
+    # minio 账号
     MINIO_ACCESSKEY: accessKey
+    # minio 密码
     MINIO_SECRETKEY: secretKey
     # skywalking 代理端配置
 #    SKYWALKING_OPTS: >-
@@ -38,27 +57,23 @@ env:
 #      -Dskywalking.agent.application_code=file-service
 #      -Dskywalking.agent.sample_n_per_3_secs=-1
 #      -Dskywalking.collector.backend_service=oap.skywalking:11800
-service:
-  enabled: false
-  type: ClusterIP
-  port: 9090
-  name: file-service
 
 metrics:
+  # 收集应用的指标数据路径
   path: /actuator/prometheus
+  # 性能指标应用分组
   group: spring-boot
 
 logs:
+  # 日志收集格式
   parser: spring-boot
 
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources,such as Minikube. If you do want to specify resources,uncomment the following
-  # lines,adjust them as necessary,and remove the curly braces after 'resources:'.
+resources:
+  # k8s中容器能使用资源的资源最大值
   limits:
     # cpu: 100m
     memory: 2Gi
+  # k8s中容器使用的最小资源需求
   requests:
     # cpu: 100m
     memory: 1Gi
