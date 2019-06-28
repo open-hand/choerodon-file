@@ -19,13 +19,13 @@ eureka:
 hystrix:
   shareSecurityContext: true
   command:
-      default:
-        execution:
-          isolation:
-            thread:
-              timeoutInMilliseconds: 40000
-            timeout:
-              enabled: false
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 40000
+          timeout:
+            enabled: false
 ribbon:
   ConnectTimeout: 10000
   ReadTimeout: 30000
