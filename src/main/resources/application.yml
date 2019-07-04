@@ -3,6 +3,10 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
+  #如果io.choerodon.actuator拆分移除了jdbc依赖可以删掉改代码
+  autoconfigure:
+    exclude:
+      - io.choerodon.actuator.ActuatorAutoConfiguration
 eureka:
   instance:
     preferIpAddress: true
@@ -15,13 +19,13 @@ eureka:
 hystrix:
   shareSecurityContext: true
   command:
-      default:
-        execution:
-          isolation:
-            thread:
-              timeoutInMilliseconds: 40000
-            timeout:
-              enabled: false
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 40000
+          timeout:
+            enabled: false
 ribbon:
   ConnectTimeout: 10000
   ReadTimeout: 30000
