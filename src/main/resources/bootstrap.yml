@@ -13,11 +13,12 @@ spring:
         max-interval: 2000
         multiplier: 1.5
 management:
+  endpoint:
+    health:
+      show-details: ALWAYS
   server:
     port: 9091
   endpoints:
     web:
       exposure:
         include: '*'
-    health:
-      show-details: "ALWAYS"
