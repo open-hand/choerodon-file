@@ -66,6 +66,16 @@ metrics:
   # 性能指标应用分组
   group: spring-boot
 
+service:
+  # 是否创建k8s service
+  enabled: false
+  # service类型
+  type: ClusterIP
+  # service端口
+  port: 9090
+  # service名称
+  name: file-service
+
 logs:
   # 日志收集格式
   parser: spring-boot
