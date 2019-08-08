@@ -1,17 +1,19 @@
 # File Service
 
-The `file-service` is built on minio server, we can use it to upload and delete files.
+`file-service`基于一个minio服务创建，它可以提供文件的上传与下载服务。
 
-## Feature
+## 特性
 
-- After uploading the file to the server, a http url will be returned.
-- There will be nothing to return after deleting file.
+- 在完成上传一个文件到服务器后，会返回一个http url。
+- 在完成删除一个文件后，不会返回任何信息。
 
-## Requirements
+## 准备
 
-Before starting this server, you shoud config the minio server `endpoint`, `accessKey` and `secretKey` in the `application.yml`.
+- io.minio
 
-For example:
+在开启服务前，你需要在 `application.yml`文件中配置minio服务`endpoint`, `accessKey` and `secretKey`。
+
+例：
 
 ```yml
 minio:
@@ -20,11 +22,11 @@ minio:
   secretKey: 123456
 ```
 
-## Installation and Getting Started
+## 安装和启动步骤
  
-  * `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service` is required.
-  * [Build the minio server](https://github.com/minio/minio)
-  * You need to config the route info on `api-gateway` like this:
+  * 需要服务： `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service`。
+  * [构建镜像服务](https://github.com/minio/minio)
+  * 你需要像这样在`api-gateway`中配置路由信息：
    ```java
        zuul:
          addHostHeader: true
@@ -34,22 +36,20 @@ minio:
              path: /file/**
              serviceId: file-service
    ```
-  
-  Then you can use feign to invoke the `file-service`.
-  
-  * The following example shows a typical Maven command to run a Spring Boot application: 
+
+  然后你能够使用feign调用`file-service`。
+   
+  * 下面这个例子展示了一个典型的用于运行Spring Boot应用的Maven命令：
   
   ```java
     mvn spring-boot:run
   ```
 
-## Dependencies
 
-- io.minio
+## 链接
 
-## Links
+* [更新日志](./CHANGELOG.zh-CN.md)
 
-* [Change Log](./CHANGELOG.zh-CN.md)
+## 如何贡献
 
-
-Pull requests are welcome! [Follow](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md) to know for more information on how to contribute.
+欢迎提出想法! 欲知更多信息请关注 [贡献说明](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md)。
