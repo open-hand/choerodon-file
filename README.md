@@ -22,6 +22,74 @@ minio:
   secretKey: 123456
 ```
 
+## 配置文件
+application.yml
+```application.yml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 3
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+    registryFetchIntervalSeconds: 1
+hystrix:
+  shareSecurityContext: true
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 40000
+          timeout:
+            enabled: false
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 30000
+feign:
+  hystrix:
+    enabled: true
+minio:
+  endpoint: http://127.0.0.1:8888
+  accessKey: choerodon
+  secretKey: 123456
+  isAwsS3: false
+  withPath: false
+```
+bootstrap.yml
+```bootstrap.yml
+server:
+  port: 9090
+spring:
+  application:
+    name: file-service
+  cloud:
+    config:
+      uri: http://127.0.0.1:8010/
+      enabled: false
+      fail-fast: true
+      retry:
+        max-attempts: 6
+        max-interval: 2000
+        multiplier: 1.5
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+  server:
+    port: 9091
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
+
 ## 安装和启动步骤
  
   * 需要服务： `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service`。
