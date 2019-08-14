@@ -92,26 +92,26 @@ management:
 
 ## 安装和启动步骤
  
-  * 需要服务： `register-service`,`oauth-service`,`api-gateway`,`gateway-helper`,`config-service`,`manager-service`。
+  * 需要服务：
+  `oauth-server`,`api-gateway`,`manager-service`,本地环境需要 `eureka-server`，线上环境需要使用 `go-register-server`
+
   * [构建镜像服务](https://github.com/minio/minio)
+
   * 你需要像这样在`api-gateway`中配置路由信息：
    ```java
        zuul:
          addHostHeader: true
          routes:
-          
+
            file:
              path: /file/**
              serviceId: file-service
    ```
 
   然后你能够使用feign调用`file-service`。
-   
-  * 下面这个例子展示了一个典型的用于运行Spring Boot应用的Maven命令：
-  
-  ```java
-    mvn spring-boot:run
-  ```
+
+  * 启动项目:
+  项目根目录下运行 `mvn spring-boot:run` 命令，或者在本地集成环境中运行 `SpringBoot` 启动类 `io.choerodon.file.FileServiceApplication`
 
 
 ## 链接
@@ -120,4 +120,4 @@ management:
 
 ## 如何贡献
 
-欢迎提出想法! 欲知更多信息请关注 [贡献说明](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md)。
+欢迎参与我们的项目! 欲知更多信息请关注 [贡献说明](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md)。
