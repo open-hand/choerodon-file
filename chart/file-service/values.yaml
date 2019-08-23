@@ -27,13 +27,6 @@ preJob:
     updatePolicy: add
     # 注册中心地址
     registerHost: http://register-server:8000
-    datasource:
-      # manager_service数据库连接地址
-      url: jdbc:mysql://localhost:3306/manager_service?useUnicode=true&characterEncoding=utf-8&useSSL=false&useInformationSchema=true&remarks=true
-      # manager_service数据库用户名
-      username: username
-      # manager_service数据库密码
-      password: password
 
 deployment:
   # 服务管理端口
@@ -44,9 +37,9 @@ env:
     # 是否启用配置中心
     SPRING_CLOUD_CONFIG_ENABLED: true
     # 配置中心地址
-    SPRING_CLOUD_CONFIG_URI: http://register-server.io-choerodon:8000/
+    SPRING_CLOUD_CONFIG_URI: http://register-server:8000/
     # 注册服务地址
-    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://register-server.io-choerodon:8000/eureka/
+    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://register-server:8000/eureka/
     # minio 地址
     MINIO_ENDPOINT: http:127.0.0.1:8888/minio
     # minio 账号
@@ -67,14 +60,8 @@ metrics:
   group: spring-boot
 
 service:
-  # 是否创建k8s service
-  enabled: false
-  # service类型
-  type: ClusterIP
   # service端口
   port: 9090
-  # service名称
-  name: file-service
 
 logs:
   # 日志收集格式

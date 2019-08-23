@@ -1,116 +1,79 @@
-部署文件的渲染模板，我们下文将定义一些变量，helm执行时会将变量渲染进模板文件中。
+# Choerodon File Service
+Choerodon File Service 基于一个minio服务创建，它可以提供文件的上传与下载服务。
 
-## _helpers.tpl
+## Introduction
 
-这个文件我们用来进行标签模板的定义，以便在上文提到的位置进行标签渲染。
+## Add Helm chart repository
 
-标签总共分为三个部分: 平台、微服务、监控。
-
-### 平台标签
-
-#### deployment 级:
-
+``` bash    
+helm repo add choerodon https://openchart.choerodon.com.cn/choerodon/c7n
+helm repo update
 ```
-{{- define "service.labels.standard" -}}
-choerodon.io/release: {{ .Release.Name | quote }}
-{{- end -}}
+
+## Installing the Chart
+
+```bash
+$ helm install c7n/file-service --name file-service
 ```
-平台管理实例需要的实例ID。
 
-### 微服务标签
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-#### pod 级:
+## Uninstalling the Chart
 
+```bash
+$ helm delete file-service
 ```
-{{- define "service.microservice.labels" -}}
-choerodon.io/version: {{ .Chart.Version | quote }}
-choerodon.io/service: {{ .Chart.Name | quote }}
-choerodon.io/metrics-port: {{ .Values.deployment.managementPort | quote }}
-{{- end -}}
-```
-微服务注册中心进行识别时所需要的版本号、项目名称、管理端口。
 
-### 监控和日志标签
+## Configuration
 
-#### deployment 级:
+Parameter | Description	| Default
+--- |  ---  |  ---  
+`replicaCount` | Replicas count | `1`
+`preJob.timeout` | job超时时间 | `300`
+`preJob.preConfig.enabled` | 是否初始化配置 | `true`
+`preJob.preConfig.configFile` | 初始化到配置中心文件名 | `application.yml`
+`preJob.preConfig.configType` | 初始化到配置中心存储方式 | `k8s`
+`preJob.preConfig.updatePolicy` | 初始化配置策略（not/add/override/update） | `add`
+`preJob.preConfig.registerHost` | 注册中心地址 | `http://register-server:8000`
+`deployment.managementPort` | 服务管理端口 | `9091`
+`env.open.SPRING_CLOUD_CONFIG_ENABLED` | 是否启用配置中心 | `true`
+`env.open.SPRING_CLOUD_CONFIG_URI` | 配置中心地址 | `http://register-server:8000/`
+`env.open.EUREKA_CLIENT_SERVICEURL_DEFAULTZONE` | 注册服务地址 | `http://register-server:8000/eureka/`
+`env.open.MINIO_ENDPOINT` | minio 地址 | `http:127.0.0.1:8888/minio`
+`env.open.MINIO_ACCESSKEY` | minio 账号 | `accessKey`
+`env.open.MINIO_SECRETKEY` | minio 密码 | `secretKey`
+`service.port` | service端口 | `9090`
+`metrics.path` | 收集应用的指标数据路径 | ``
+`metrics.group` | 性能指标应用分组 | `spring-boot`
+`logs.parser` | 日志收集格式 | `spring-boot`
+`resources.limits` | k8s中容器能使用资源的资源最大值 | `2Gi`
+`resources.requests` | k8s中容器使用的最小资源需求 | `1Gi`
 
-```
-{{- define "service.logging.deployment.label" -}}
-choerodon.io/logs-parser: {{ .Values.logs.parser | quote }}
-{{- end -}}
-```
-日志管理所需要的应用标签。该标签指定应用程序的日志格式，内置格式有`nginx`,`spring-boot`,`docker`对于spring-boot微服务请使用`spring-boot`，如果不需要收集日志请移除此段代码，并删除模板文件关于`service.logging.deployment.label`的引用。
-
-#### pod 级:
-
-```
-{{- define "service.monitoring.pod.annotations" -}}
-choerodon.io/metrics-group: {{ .Values.metrics.group | quote }}
-choerodon.io/metrics-path: {{ .Values.metrics.path | quote }}
-{{- end -}}
-```
-性能指标管理所需要的应用类别以及监控指标路径。其中`metrics-group`将应用按照某个关键字分组，并在grafana配置实现分组展示。`metrics-path`指定收集应用的指标数据路径。
-如果不需要监控请移除此段代码
-
-## values.yaml
-
-这个文件中的键值对，即为我们上文中所引用的变量。
-
-将所以有变量集中在一个文件中，方便部署的时候进行归档以及灵活替换。
-
-同时，helm命令支持使用 `--set FOO_BAR=FOOBAR` 参数对values 文件中的变量进行赋值，可以进一步简化部署流程。
-
-
-## 参数对照表
-
-参数名 | 含义 
+### SkyWalking Configuration
+Parameter | Description
 --- |  --- 
-replicaCount | pod运行数量
-image.repository | 镜像库地址
-image.pullPolicy | 镜像拉取策略
-preJob.timeout | job超时时间
-preJob.image | job镜像库地址
-preJob.preConfig.enabled | 是否初始manager_service数据库
-preJob.preConfig.configFile | 初始化到配置中心文件名
-preJob.preConfig.configType | 初始化到配置中心存储方式
-preJob.preConfig.registerHost | 注册中心地址
-preJob.preConfig.datasource.url | manager_service数据库连接地址
-preJob.preConfig.datasource.username | manager_service数据库用户名
-preJob.preConfig.datasource.password | manager_servic数据库密码
-deployment.managementPort | 服务管理端口
-env.open.SPRING_CLOUD_CONFIG_ENABLED | 是否启用配置中心
-env.open.SPRING_CLOUD_CONFIG_URI | 配置中心地址
-env.open.EUREKA_CLIENT_SERVICEURL_DEFAULTZONE | 注册服务地址
-env.open.MINIO_ENDPOINT | minio 地址
-env.open.MINIO_ACCESSKEY | minio 账号
-env.open.MINIO_SECRETKEY | minio 密码
-env.open.SKYWALKING_OPTS | skywalking代理端配置
-metrics.path | 收集应用的指标数据路径
-metrics.group| 性能指标应用分组
-logs.parser | 日志收集格式
-resources.limits | k8s中容器能使用资源的资源最大值
-resources.requests | k8s中容器使用的最小资源需求
+`javaagent` | SkyWalking 代理jar包(添加则开启 SkyWalking，删除则关闭)
+`skywalking.agent.application_code` | SkyWalking 应用名称
+`skywalking.agent.sample_n_per_3_secs` | SkyWalking 采样率配置
+`skywalking.agent.namespace` | SkyWalking 跨进程链路中的header配置
+`skywalking.agent.authentication` | SkyWalking 认证token配置
+`skywalking.agent.span_limit_per_segment` | SkyWalking 每segment中的最大span数配置
+`skywalking.agent.ignore_suffix` | SkyWalking 需要忽略的调用配置
+`skywalking.agent.is_open_debugging_class` | SkyWalking 是否保存增强后的字节码文件
+`skywalking.collector.backend_service` | SkyWalking OAP 服务地址和端口配置
 
-### skywalking 代理端配置参数对照表
-skywalking 代理端配置 | 含义 
---- |  --- 
-javaagent | skywalking代理jar包(添加则开启skywalking，删除则关闭)
-skywalking.agent.application_code | skywalking应用名称
-skywalking.agent.sample_n_per_3_secs | skywalking采样率配置
-skywalking.agent.namespace | skywalking跨进程链路中的header配置
-skywalking.agent.authentication | skywalking认证token配置
-skywalking.agent.span_limit_per_segment | skywalking每segment中的最大span数配置
-skywalking.agent.ignore_suffix | skywalking需要忽略的调用配置
-skywalking.agent.is_open_debugging_class | skywalking是否保存增强后的字节码文件
-skywalking.collector.backend_service | oap服务地址和端口配置
+```bash
+$ helm install c7n/api-gateway \
+    --set env.open.SKYWALKING_OPTS="-javaagent:/agent/skywalking-agent.jar -Dskywalking.agent.application_code=file-service  -Dskywalking.agent.sample_n_per_3_secs=-1 -Dskywalking.collector.backend_service=oap.skywalking:11800" \
+    --name file-service
+```
 
-#### skywalking 代理端配置示例
-```yaml
-env:
-  open:
-    SKYWLKING_OPS: >-
-      -javaagent:/agent/skywalking-agent.jar
-      -Dskywalking.agent.application_code=file-service
-      -Dskywalking.agent.sample_n_per_3_secs=-1
-      -Dskywalking.collector.backend_service=oap.skywalking:11800
+## 验证部署
+```bash
+curl -s $(kubectl get po -n c7n-system -l choerodon.io/release=file-service -o jsonpath="{.items[0].status.podIP}"):9091/actuator/health | jq -r .status
+```
+出现以下类似信息即为成功部署
+
+```bash
+UP
 ```
