@@ -1,18 +1,18 @@
 package io.choerodon.file.app.service.impl;
 
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
+import io.choerodon.file.infra.config.FileClient;
+import io.choerodon.file.infra.exception.ApplicationTransferException;
+import io.choerodon.file.infra.exception.FileUploadException;
+import io.choerodon.file.infra.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
-import io.choerodon.file.infra.config.FileClient;
-import io.choerodon.file.infra.exception.FileUploadException;
-import io.choerodon.file.infra.utils.ImageUtils;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -85,4 +85,41 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+
+    @Override
+    public String createButketWithNonePolicy(String bucketName) {
+        //如butket不存在则创建
+        bucketName = fileClient.getBucketName(bucketName);
+        if (!fileClient.doesBucketExist(bucketName)) {
+            fileClient.makeBucketWithNonePolicy(bucketName);
+        }
+        //返回butket name
+        return bucketName;
+    }
+
+    @Override
+    public String presignedGetObject(String bucketName, String url, Integer expires) {
+        String fileName = null;
+        try {
+            // Check bucket
+            bucketName = fileClient.getBucketName(bucketName);
+            if (!fileClient.doesBucketExist(bucketName)) {
+                throw new ApplicationTransferException("error.bucket.not.found");
+            }
+
+            // Check file
+            String prefixUrl = fileClient.getPrefixUrl(bucketName);
+            int prefixUrlSize = prefixUrl.length();
+            fileName = url.substring(prefixUrlSize);
+            if (StringUtils.isEmpty(fileName) || fileClient.getObjectUrl(bucketName, fileName) == null) {
+                throw new ApplicationTransferException("error.file.not.found");
+            }
+
+            // Returns an presigned URL
+            return fileClient.presignedGetObject(bucketName, fileName, expires);
+        } catch (Exception e) {
+            LOGGER.error("Failed to get temporary path, bucketName: {}, fileName: {}", bucketName, fileName);
+            throw new ApplicationTransferException("error.get.temporary.path", e);
+        }
+    }
 }
