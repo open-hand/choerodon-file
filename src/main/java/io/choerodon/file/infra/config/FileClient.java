@@ -1,8 +1,5 @@
 package io.choerodon.file.infra.config;
 
-import java.io.InputStream;
-import java.util.UUID;
-
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -10,13 +7,15 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import io.choerodon.file.infra.exception.FileUploadException;
 import io.minio.MinioClient;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
 import io.minio.policy.PolicyType;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.choerodon.file.infra.exception.FileUploadException;
+import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * @author dongfan117@gmail.com
@@ -186,5 +185,39 @@ public class FileClient {
             return bucketName + "-" + this.fileClientConfig.getAppId();
         }
         return bucketName;
+    }
+
+
+    /*
+    Creates a bucket with  policyType NONE
+     */
+    public void makeBucketWithNonePolicy(String bucketName) {
+        try {
+            if (isAwsS3) {
+                amazonS3.createBucket(bucketName);
+            } else {
+                minioClient.makeBucket(bucketName);
+                minioClient.setBucketPolicy(bucketName, FILE, PolicyType.NONE);
+            }
+        } catch (Exception e) {
+            throw new FileUploadException("error.file.bucket.error", e);
+        }
+    }
+
+    /*
+    Returns an presigned URL to download the object in the bucket with given expiry time.
+     */
+    public String presignedGetObject(String bucketName, String fileName, Integer expires) {
+        String objectUrl = "";
+        try {
+            if (isAwsS3) {
+                objectUrl = this.amazonS3.getUrl(bucketName, fileName).toString();
+            } else {
+                objectUrl = this.minioClient.presignedGetObject(bucketName, fileName, expires);
+            }
+        } catch (Exception e) {
+            throw new FileUploadException("error.file.notExist", e);
+        }
+        return objectUrl;
     }
 }

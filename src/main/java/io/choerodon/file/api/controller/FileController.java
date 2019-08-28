@@ -1,9 +1,10 @@
 package io.choerodon.file.api.controller;
 
-import java.util.Optional;
-
 import io.choerodon.base.annotation.Permission;
 import io.choerodon.base.enums.ResourceType;
+import io.choerodon.file.api.dto.FileDTO;
+import io.choerodon.file.app.service.FileService;
+import io.choerodon.file.infra.exception.FileUploadException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.choerodon.file.api.dto.FileDTO;
-import io.choerodon.file.app.service.FileService;
-import io.choerodon.file.infra.exception.FileUploadException;
+import java.util.Optional;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -87,5 +86,26 @@ public class FileController {
                                            @RequestParam(required = false, name = "endY") Integer height) {
         return new ResponseEntity<>(fileService.cutImage(file, rotate, axisX, axisY, width, height), HttpStatus.OK);
     }
+
+    @Permission(permissionPublic = true, type = ResourceType.SITE)
+    @ApiOperation(value = "创建无策略的Butket")
+    @GetMapping("/v1/bucket/policy_none")
+    public ResponseEntity<String> createButketWithNonePolicy(@ApiParam(value = "bucket_name", required = true)
+                                                             @RequestParam("bucket_name") String bucketName) {
+        return new ResponseEntity<>(fileService.createButketWithNonePolicy(bucketName), HttpStatus.OK);
+    }
+
+    @Permission(permissionPublic = true, type = ResourceType.SITE)
+    @ApiOperation(value = "获取文件的临时下载路径")
+    @GetMapping("/v1/tmp_download_path")
+    public ResponseEntity<String> getTmpDownloadPath(@ApiParam(value = "bucket_name", required = true)
+                                                     @RequestParam("bucket_name") String bucketName,
+                                                     @ApiParam(value = "文件路径", required = true)
+                                                     @RequestParam("file_url") String url,
+                                                     @ApiParam(value = "有效时长（秒）", required = true)
+                                                     @RequestParam("expires") Integer expires) {
+        return new ResponseEntity<>(fileService.presignedGetObject(bucketName, url, expires), HttpStatus.OK);
+    }
+
 
 }

@@ -1,8 +1,7 @@
 package io.choerodon.file.app.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import io.choerodon.file.api.dto.FileDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -27,5 +26,23 @@ public interface FileService {
      * @return
      */
     String cutImage(MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height);
+
+
+    /**
+     * 创建无策略的Bucket
+     *
+     * @param bucketName
+     * @return
+     */
+    String createButketWithNonePolicy(String bucketName);
+
+    /**
+     * 获取文件的临时下载路径
+     *
+     * @param bucketName
+     * @param url
+     * @return 临时路径
+     */
+    String presignedGetObject(String bucketName, String url, Integer expires);
 
 }
