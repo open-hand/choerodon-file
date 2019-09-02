@@ -1,7 +1,11 @@
 package io.choerodon.file.app.service;
 
+import io.choerodon.file.api.dto.BucketCreateResultDTO;
 import io.choerodon.file.api.dto.FileDTO;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -34,7 +38,7 @@ public interface FileService {
      * @param bucketName
      * @return
      */
-    String createButketWithNonePolicy(String bucketName);
+    BucketCreateResultDTO createBucketWithNonePolicy(String bucketName);
 
     /**
      * 获取文件的临时下载路径
@@ -44,5 +48,15 @@ public interface FileService {
      * @return 临时路径
      */
     String presignedGetObject(String bucketName, String url, Integer expires);
+
+
+    /**
+     * 获取文件的临时下载路径
+     *
+     * @param bucketName
+     * @param urls
+     * @return 临时路径
+     */
+    Map<String, String> presignedGetObjectList(String bucketName, List<String> urls, Integer expires);
 
 }

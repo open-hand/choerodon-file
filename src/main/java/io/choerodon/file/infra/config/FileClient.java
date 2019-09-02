@@ -118,6 +118,25 @@ public class FileClient {
         }
     }
 
+    /**
+     * 是否存在策略为NONE的bucket
+     *
+     * @param bucketName
+     * @return 是/否
+     */
+    public boolean isBucketPolicyNone(String bucketName) {
+        try {
+            if (isAwsS3) {
+                return false;
+            } else {
+                PolicyType bucketPolicy = this.minioClient.getBucketPolicy(bucketName, FILE);
+                return PolicyType.NONE.equals(bucketPolicy);
+            }
+        } catch (Exception e) {
+            throw new FileUploadException("error.file.bucket.error", e);
+        }
+    }
+
     public void makeBucket(String bucketName) {
         try {
             if (isAwsS3) {

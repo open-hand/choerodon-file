@@ -1,6 +1,7 @@
 package io.choerodon.file.app.service.impl;
 
 import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.api.dto.BucketCreateResultDTO;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 import io.choerodon.file.infra.config.FileClient;
@@ -13,6 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author HuangFuqiang@choerodon.io
@@ -87,14 +92,19 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public String createButketWithNonePolicy(String bucketName) {
-        //如butket不存在则创建
+    public BucketCreateResultDTO createBucketWithNonePolicy(String bucketName) {
+        BucketCreateResultDTO resultDTO = new BucketCreateResultDTO();
         bucketName = fileClient.getBucketName(bucketName);
-        if (!fileClient.doesBucketExist(bucketName)) {
+        resultDTO.setNewlyCreatedOne(!fileClient.doesBucketExist(bucketName));
+        if (resultDTO.getNewlyCreatedOne()) {
+            //bucket不存在则创建
             fileClient.makeBucketWithNonePolicy(bucketName);
+            resultDTO.setCreatedSuccessfully(true);
+        } else {
+            //bucket存在则判断是否是策略为无的bucket
+            resultDTO.setCreatedSuccessfully(fileClient.isBucketPolicyNone(bucketName));
         }
-        //返回butket name
-        return bucketName;
+        return resultDTO;
     }
 
     @Override
@@ -121,5 +131,12 @@ public class FileServiceImpl implements FileService {
             LOGGER.error("Failed to get temporary path, bucketName: {}, fileName: {}", bucketName, fileName);
             throw new ApplicationTransferException("error.get.temporary.path", e);
         }
+    }
+
+    @Override
+    public Map<String, String> presignedGetObjectList(String bucketName, List<String> urls, Integer expires) {
+        Map<String, String> resultMap = new HashMap<>();
+        urls.forEach(url -> resultMap.put(url, presignedGetObject(bucketName, url, expires)));
+        return resultMap;
     }
 }

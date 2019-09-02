@@ -2,6 +2,7 @@ package io.choerodon.file.api.controller;
 
 import io.choerodon.base.annotation.Permission;
 import io.choerodon.base.enums.ResourceType;
+import io.choerodon.file.api.dto.BucketCreateResultDTO;
 import io.choerodon.file.api.dto.FileDTO;
 import io.choerodon.file.app.service.FileService;
 import io.choerodon.file.infra.exception.FileUploadException;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -88,11 +91,11 @@ public class FileController {
     }
 
     @Permission(permissionPublic = true, type = ResourceType.SITE)
-    @ApiOperation(value = "创建无策略的Butket")
+    @ApiOperation(value = "创建无策略的Bucket")
     @GetMapping("/v1/bucket/policy_none")
-    public ResponseEntity<String> createButketWithNonePolicy(@ApiParam(value = "bucket_name", required = true)
-                                                             @RequestParam("bucket_name") String bucketName) {
-        return new ResponseEntity<>(fileService.createButketWithNonePolicy(bucketName), HttpStatus.OK);
+    public ResponseEntity<BucketCreateResultDTO> createBucketWithNonePolicy(@ApiParam(value = "bucket_name", required = true)
+                                                                            @RequestParam("bucket_name") String bucketName) {
+        return new ResponseEntity<>(fileService.createBucketWithNonePolicy(bucketName), HttpStatus.OK);
     }
 
     @Permission(permissionPublic = true, type = ResourceType.SITE)
@@ -105,6 +108,19 @@ public class FileController {
                                                      @ApiParam(value = "有效时长（秒）", required = true)
                                                      @RequestParam("expires") Integer expires) {
         return new ResponseEntity<>(fileService.presignedGetObject(bucketName, url, expires), HttpStatus.OK);
+    }
+
+
+    @Permission(permissionPublic = true, type = ResourceType.SITE)
+    @ApiOperation(value = "批量获取文件列表的临时下载路径")
+    @GetMapping("/v1/tmp_download_paths")
+    public ResponseEntity<Map<String, String>> getTmpDownloadPathList(@ApiParam(value = "bucket_name", required = true)
+                                                                      @RequestParam("bucket_name") String bucketName,
+                                                                      @ApiParam(value = "有效时长（秒）", required = true)
+                                                                      @RequestParam("expires") Integer expires,
+                                                                      @ApiParam(value = "文件路径列表", required = true)
+                                                                      @RequestBody List<String> urls) {
+        return new ResponseEntity<>(fileService.presignedGetObjectList(bucketName, urls, expires), HttpStatus.OK);
     }
 
 
