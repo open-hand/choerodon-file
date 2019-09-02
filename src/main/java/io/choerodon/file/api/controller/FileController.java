@@ -113,7 +113,7 @@ public class FileController {
 
     @Permission(permissionPublic = true, type = ResourceType.SITE)
     @ApiOperation(value = "批量获取文件列表的临时下载路径")
-    @GetMapping("/v1/tmp_download_paths")
+    @PostMapping("/v1/tmp_download_paths")
     public ResponseEntity<Map<String, String>> getTmpDownloadPathList(@ApiParam(value = "bucket_name", required = true)
                                                                       @RequestParam("bucket_name") String bucketName,
                                                                       @ApiParam(value = "有效时长（秒）", required = true)
