@@ -17,7 +17,7 @@
 
 ```yml
 minio:
-  endpoint: http:127.0.0.1:8888/minio
+  endpoint: http://127.0.0.1:8888/minio
   accessKey: choerodon
   secretKey: 123456
 ```
