@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.choerodon</groupId>
         <artifactId>choerodon-framework-parent</artifactId>
-        <version>0.11.0.RELEASE</version>
+        <version>0.13.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,12 +13,15 @@
     <version>0.19.0.RELEASE</version>
 
     <properties>
-        <choerodon.starters.version>0.12.0.RELEASE</choerodon.starters.version>
         <choerodon.mainClass>io.choerodon.file.FileServiceApplication</choerodon.mainClass>
         <choerodon.serviceBuild>true</choerodon.serviceBuild>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.choerodon</groupId>
+            <artifactId>choerodon-starter-webmvc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
@@ -36,7 +39,6 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-swagger</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -63,12 +65,10 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-oauth-resource</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-feign-replay</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -77,12 +77,10 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-actuator</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-core</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>
@@ -97,7 +95,6 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-metric</artifactId>
-            <version>${choerodon.starters.version}</version>
         </dependency>
         <!-- Test Dependencies -->
         <dependency>
