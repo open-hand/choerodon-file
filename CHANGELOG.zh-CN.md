@@ -10,7 +10,7 @@
 
 ### 修改
 
-- 更新 starter 到 0.12.0.RELEASE
+- 更新 starter 到 0.13.0.RELEASE
 - 修改创建Bucket策略为NONE的的接口返回信息
 
 ## [0.18.0] - 2019-06-20
