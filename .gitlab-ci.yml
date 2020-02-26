@@ -19,6 +19,7 @@ build backend:
         -Dsonar.analysis.serviceGroup=$GROUP_NAME
         -Dsonar.analysis.commitId=$CI_COMMIT_SHA
         -Dsonar.projectKey=${GROUP_NAME}:${PROJECT_NAME}
+    - mvn package spring-boot:repackage
     - mv target/app.jar $PWD/docker
     - kaniko -c $PWD/docker -f $PWD/docker/Dockerfile -d ${DOCKER_REGISTRY}/${GROUP_NAME}/${PROJECT_NAME}:${CI_COMMIT_TAG}
 
