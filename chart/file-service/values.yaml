@@ -151,6 +151,8 @@ metrics:
   # 性能指标应用分组
   group: spring-boot
 
+# 是否收集日志至EFK
 logs:
+  enabled: false
   # 日志收集格式
   parser: spring-boot
