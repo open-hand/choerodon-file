@@ -1,0 +1,181 @@
+## 初始化配置至配置服务及初始化本服务数据库
+preJob:
+  # job 超时时间
+  timeout: 1200
+  # 工具 jar 包镜像库地址
+  image: registry.cn-shanghai.aliyuncs.com/c7n/dbtool:0.6.7
+  preConfig:
+    # 是否初始化manager_service数据库
+    enabled: true
+    # 初始化到配置中心文件名
+    configFile: application.yml
+    # 初始化到配置中心存储方式: k8s/db
+    configType: k8s
+    # 初始化配置策略: not/add/override/update
+    updatePolicy: add
+    # 注册中心地址
+    registerHost: http://register-server:8000
+    # 当 configType 值为 db 时配置 manager-service 的数据库
+    datasource:
+      url: jdbc:mysql://localhost:3306/manager_service?useUnicode=true&characterEncoding=utf-8&useSSL=false&useInformationSchema=true&remarks=true&serverTimezone=Asia/Shanghai
+      username: username
+      password: password
+  preInitDB:
+    # 是否初始化base_service数据库
+    enabled: true
+    datasource:
+      # 初始化数据库更新数据的时候忽略的表或列
+      exclusion: iam_user.hash_password,oauth_client.web_server_redirect_uri,oauth_ldap.server_address,oauth_ldap.object_class,iam_role.is_enabled,fd_organization.name
+      # 本服务数据库相关信息
+      url: jdbc:mysql://localhost:3306/base_service?useUnicode=true&characterEncoding=utf-8&useSSL=false&useInformationSchema=true&remarks=true&serverTimezone=Asia/Shanghai
+      username: username
+      password: password
+
+## 实例运行数量
+replicaCount: 1
+
+## 设置默认的 image、imageTag 和 imagePullPolicy。
+image:
+  repository: registry.cn-shanghai.aliyuncs.com/c7n/hzero-file
+  tag: ~
+  pullPolicy: IfNotPresent
+
+## Deployment 更新策略
+deploymentUpdate:
+  type: RollingUpdate
+  maxUnavailable: 0
+  maxSurge: 100%
+
+## Pod 优先级设置
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+##
+priorityClassName: ""
+
+## Pod 节点分配
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+## 给 Pod 附加的 annotations
+podAnnotations: {}
+
+## ## Pod 附加的 labels
+podLabels: {}
+
+## 实例运行时的环境变量
+env:
+  open:
+    # 本实例服务端口
+    SERVER_PORT: 8030
+    # 本实例管理端口
+    MANAGEMENT_SERVER_PORT: 8031
+
+    # 是否启用配置中心
+    SPRING_CLOUD_CONFIG_ENABLED: true
+    # 配置中心地址
+    SPRING_CLOUD_CONFIG_URI: http://register-server:8000
+
+    # Redis 主机地址
+    SPRING_REDIS_HOST: localhost
+    # Redis 端口
+    SPRING_REDIS_PORT: 6379
+    # Redis db
+    SPRING_REDIS_DATABASE: 2
+
+    # 数据库连接地址
+    SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/base_service?useUnicode=true&characterEncoding=utf-8&useSSL=false&useInformationSchema=true&remarks=true&serverTimezone=Asia/Shanghai
+    # 数据库用户名
+    SPRING_DATASOURCE_USERNAME: choerodon
+    # 数据库密码
+    SPRING_DATASOURCE_PASSWORD: password
+
+    # 注册服务地址
+    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://register-server:8000/eureka/
+
+    # 忽略jwt的url
+    CHOERODON_RESOURCE_JWT_IGNORE: /favicon.ico
+
+    # 清理permission表中的旧接口和role_permission表中角色和权限层级不匹配的脏数据
+    CHOERODON_CLEANPERMISSION: false
+
+    # 网关地址
+    CHOERODON_GATEWAY_URL: http://api.example.com
+
+    #用户默认密码
+    CHOERODON_USER_DEFAULT_PASSWORD: abcd1234
+
+## Liveness 和 Readiness 探针相关配置
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 180
+  periodSeconds: 30
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+
+## 资源请求和限制相关配置
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: 
+  limits:
+    # cpu: 100m
+    memory: 2Gi
+  requests:
+    # cpu: 100m
+    memory: 2Gi
+
+## 插件相关配置
+plugins:
+  # skywalking agent 镜像地址
+  skywalkingAgentImage: registry.cn-shanghai.aliyuncs.com/c7n/skywalking-agent:6.5.0
+
+## service 相关设置
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+service:
+  # 是否启用 service 暴露本服务
+  enabled: true
+  # Service 名称
+  name: hzero-file
+  # Service 类型
+  type: ClusterIP
+  # 指定 service 的 clusterIP
+  clusterIP: ~
+  # 端口设置
+  ports: 
+    # 服务端口
+    http: 
+      port: 8030
+      nodePort: 30092
+    # 管理端口
+    actuator: 
+      port: 8031
+      nodePort: 30093
+  ## externalIPs 设置
+  # externalIPs:
+  #   - externalIp1
+  annotations: {}
+    # prometheus.io/scrape: 'true'
+    # prometheus.io/path: '/actuator/prometheus'
+    # prometheus.io/port: '8031'
+
+## 指标收集
+metrics:
+  # 收集应用的指标数据路径
+  path: /actuator/prometheus
+  # 性能指标应用分组
+  group: spring-boot
+
+# 是否收集日志至EFK
+logs:
+  enabled: false
+  # 日志收集格式
+  parser: spring-boot

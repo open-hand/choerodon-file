@@ -1,0 +1,50 @@
+# maven ignore
+target/
+*.versionsBackup
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+app.jar
+
+# system ignore
+.DS_Store
+.factorypath
+Thumbs.db
+
+gitlabci/.generated
+
+rebel.xml
+rebel-remote.xml
+
+/temp
+application-default.yml
+
+init-database.sh
+
+choerodon_temp/
+
+# frontend
+yarn.lock
+lib
+node_modules
+package-lock.json
+**/lib/dist/
+**/lib/assets/
+**/lib/fonts/
+
+/liquibase
