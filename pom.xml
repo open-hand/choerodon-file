@@ -23,6 +23,22 @@
         <dependency>
             <groupId>org.hzero</groupId>
             <artifactId>hzero-file-saas</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hzero.starter</groupId>
+                    <artifactId>hzero-starter-hitoa</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hzero.starter</groupId>
+                    <artifactId>hzero-starter-file-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hzero.starter</groupId>
+            <artifactId>hzero-starter-file-core</artifactId>
+            <version>1.4.0-SNAPSHOT</version>
         </dependency>
 
 
@@ -38,7 +54,7 @@
     </dependencies>
 
     <repositories>
-            <repository>
+        <repository>
             <id>HzeroRelease</id>
             <name>Hzero-Release Repository</name>
             <url>http://nexus.saas.hand-china.com/content/repositories/Hzero-Release/</url>
