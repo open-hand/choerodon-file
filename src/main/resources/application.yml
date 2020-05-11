@@ -110,9 +110,6 @@ hzero:
       call-back-url: ${DOC_SERVER_CALL_BACK:http://dev.hzero.org:8080/hfle/v1/only-office/save}
       converter-url: ${DOC_SERVER_CONVERTER_URL:http://document.hzero.org:8000/converter}
     gateway-path: ${FILE_GATEWAY_URL:http://hzeronb.saas.hand-china.com/hfle}
-  data:
-    permission:
-      db-owner: ${HZERO_DB_OWNER:}
   resource:
     # 匹配的资源才会解析JwtToken便于得到UserDetails
     pattern: ${HZERO_RESOURCE_PATTERN:/v1/*,/hzero/*,/hfle/v1/*,/hfle/hzero/*}

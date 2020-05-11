@@ -124,7 +124,6 @@ env:
     DOC_SERVER_CONVERTER_URL: http://converter.document.hzero.org/converter
     # 文件服务路径
     FILE_GATEWAY_URL: http://hzeronb.saas.hand-china.com/hfle
-    HZERO_DB_OWNER:
     JAVA_OPTS: >
       -Xms1024m
       -Xmx1536m
