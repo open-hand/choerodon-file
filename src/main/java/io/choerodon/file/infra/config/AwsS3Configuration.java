@@ -20,7 +20,7 @@ public class AwsS3Configuration {
     @Value("${minio.secretKey}")
     private String secretKey;
 
-    @Value("${minio.region:#{null}")
+    @Value("${minio.region:#{null}}")
     private String region;
 
     @Value("${minio.withPath:false}")
