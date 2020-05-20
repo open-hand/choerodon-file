@@ -28,16 +28,12 @@
                     <groupId>org.hzero.starter</groupId>
                     <artifactId>hzero-starter-hitoa</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.hzero.starter</groupId>
-                    <artifactId>hzero-starter-file-core</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.hzero.starter</groupId>
-            <artifactId>hzero-starter-file-core</artifactId>
+            <artifactId>hzero-starter-file-minio</artifactId>
         </dependency>
 
 
