@@ -1,14 +1,25 @@
 package io.choerodon.file.app.service.impl;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.hzero.boot.file.FileClient;
 import org.hzero.boot.file.dto.FileSimpleDTO;
+import org.hzero.file.api.dto.FileDTO;
+import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
+import org.hzero.file.domain.repository.FileRepository;
+import org.hzero.file.domain.service.factory.StoreFactory;
+import org.hzero.file.domain.service.factory.StoreService;
+import org.hzero.file.infra.util.CodeUtils;
+import org.hzero.starter.file.service.AbstractFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
@@ -31,6 +42,12 @@ public class FileC7nServiceImpl implements FileC7nService {
     private FileClient fileClient;
     @Autowired
     private DevOpsClient devOpsClient;
+    @Autowired
+    private StoreFactory storeFactory;
+    @Autowired
+    private FileRepository fileRepository;
+    @Autowired
+    private CapacityUsedService capacityUsedService;
 
     @Override
     public String cutImage(Long tenantId, String bucketName, MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
@@ -76,5 +93,27 @@ public class FileC7nServiceImpl implements FileC7nService {
             throw new DevopsCiInvalidException("error.save.artifact.information");
         }
         return fileUrl;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByUrls(Long organizationId, String bucketName, List<String> urls) {
+        if (ObjectUtils.isEmpty(urls)) {
+            return;
+        }
+        String attachmentUuid = "$";
+        List<String> decodeUrls = CodeUtils.decode(urls);
+        StoreService storeService = storeFactory.build(organizationId, null);
+        Assert.notNull(storeService, "hfle.error.file_store_config");
+        List<FileDTO> dbFileRecords =
+                fileRepository.selectFileByUrls(organizationId, bucketName, decodeUrls, attachmentUuid);
+        AbstractFileService abstractFileService = storeService.getAbstractFileService();
+        //先删文件
+        decodeUrls.forEach(url -> abstractFileService.deleteFile(bucketName, url, null));
+        //数据库有数据，删数据库
+        if(!dbFileRecords.isEmpty()) {
+            fileRepository.deleteFileByUrls(organizationId, bucketName, attachmentUuid, decodeUrls);
+            dbFileRecords.forEach(r -> capacityUsedService.refreshCache(organizationId, -r.getFileSize()));
+        }
     }
 }
