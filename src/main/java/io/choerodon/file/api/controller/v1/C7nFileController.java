@@ -3,16 +3,16 @@ package io.choerodon.file.api.controller.v1;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.iam.ResourceLevel;
 import io.choerodon.file.app.service.FileC7nService;
 import io.choerodon.swagger.annotation.Permission;
+
+import java.util.List;
 
 /**
  * @author zmf
@@ -55,5 +55,16 @@ public class C7nFileController {
             @ApiParam(value = "上传文件", required = true)
             @RequestParam("file") MultipartFile multipartFile) {
         return ResponseEntity.ok(fileC7nService.uploadDevOpsArtifactFile(tenantId, token, commit, ciPipelineId, ciJobId, artifactName, multipartFile));
+    }
+
+
+    @Permission(permissionPublic = true, level = ResourceLevel.SITE)
+    @ApiOperation(value = "根据bucketName和文件的完全url删除文件")
+    @PostMapping("/{organizationId}/delete-by-url")
+    public ResponseEntity deleteByUrls(@ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
+                                       @ApiParam(value = "桶名", required = true) @RequestParam("bucketName") String bucketName,
+                                       @ApiParam(value = "文件地址", required = true) @RequestBody List<String> urls) {
+        fileC7nService.deleteByUrls(organizationId, bucketName, urls);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

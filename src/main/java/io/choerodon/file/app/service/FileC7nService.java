@@ -2,6 +2,8 @@ package io.choerodon.file.app.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author scp
  * @date 2020/5/14
@@ -39,4 +41,13 @@ public interface FileC7nService {
      * @return 软件包地址， 如果有异常，返回400
      */
     String uploadDevOpsArtifactFile(Long tenantId, String token, String commit, Long ciPipelineId, Long ciJobId, String artifactName, MultipartFile multipartFile);
+
+    /**
+     * 根据url和bucketName删除minio的文件，如果file表中也有数据，连带删除
+     *
+     * @param organizationId
+     * @param bucketName
+     * @param urls
+     */
+    void deleteByUrls(Long organizationId, String bucketName, List<String> urls);
 }
