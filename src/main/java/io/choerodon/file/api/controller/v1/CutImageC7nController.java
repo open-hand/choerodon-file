@@ -17,7 +17,8 @@ import io.choerodon.swagger.annotation.Permission;
  * @date 2020/5/14
  * @description
  */
-@RestController(value = "/choerodon/v1/{organization_id}")
+@RestController
+@RequestMapping(value = "/choerodon/v1/{organization_id}")
 public class CutImageC7nController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class CutImageC7nController {
                                            @ApiParam(name = "endY", value = "裁剪的高度", example = "200")
                                            @RequestParam(required = false, name = "endY") Integer height,
                                            @ApiParam(value = "租户ID", required = true)
-                                           @PathVariable Long organizationId,
+                                           @PathVariable("organization_id") Long organizationId,
                                            @ApiParam(value = "桶名", required = true)
                                            @RequestParam("bucketName") String bucketName
     ) {
