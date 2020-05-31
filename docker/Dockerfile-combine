@@ -4,5 +4,5 @@ COPY app.jar hzero-register.jar
 COPY dist dist
 RUN chmod +x /choerodon/dist/env.sh \
     && chown -R www-data:www-data /choerodon
-USER www-data
+USER 33
 CMD /choerodon/dist/env.sh java $JAVA_OPTS $SKYWALKING_OPTS -jar /choerodon/hzero-register.jar
