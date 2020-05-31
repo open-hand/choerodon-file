@@ -12,6 +12,4 @@
     <service name="hzero_asgard" filename="hzero_asgard" schema="hzero_asgard" description="事务服务"/>
     <service name="hzero_file" filename="hzero_file" schema="hzero_file" description="文件服务"/>
     <service name="hzero_message" filename="hzero_message" schema="hzero_message" description="消息服务"/>
-    <service name="hzero_interface" filename="hzero_interface" schema="hzero_interface" description="接口服务"/>
-    <service name="hzero_monitor" filename="hzero_monitor" schema="hzero_monitor" description="监控审计服务"/>
 </services>
