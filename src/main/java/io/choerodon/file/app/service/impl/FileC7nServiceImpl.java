@@ -13,6 +13,8 @@ import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.util.CodeUtils;
 import org.hzero.starter.file.service.AbstractFileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,8 @@ import io.choerodon.file.infra.utils.ImageUtils;
  */
 @Service
 public class FileC7nServiceImpl implements FileC7nService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileC7nServiceImpl.class);
+
     @Autowired
     private FileService fileService;
     @Autowired
@@ -61,6 +65,7 @@ public class FileC7nServiceImpl implements FileC7nService {
 
     @Override
     public String uploadDevOpsArtifactFile(Long tenantId, String token, String commit, Long ciPipelineId, Long ciJobId, String artifactName, MultipartFile multipartFile) {
+        LOGGER.info("UploadDevOpsArtifactFile: the tenant id {}, token {}, commit {}, ciPipelineId {}, ciJobId: {}, artifactName: {}, size: {}", tenantId, token, commit, ciPipelineId, ciJobId, artifactName, multipartFile.getSize());
         String fileName = String.format(DevOpsConstants.CI_JOB_ARTIFACT_NAME_TEMPLATE, ciPipelineId, artifactName);
         // 先去devops-service校验参数
         ResponseEntity<Boolean> checkResult = devOpsClient.checkJobArtifactInfo(token, commit, ciPipelineId, ciJobId, artifactName, multipartFile.getSize());
@@ -79,19 +84,20 @@ public class FileC7nServiceImpl implements FileC7nService {
         String fileUrl = fileClient.uploadFile(tenantId, DevOpsConstants.DEV_OPS_CI_ARTIFACT_FILE_BUCKET, null, fileName, multipartFile);
 
         // 将信息给devops-service保存
-        ResponseEntity responseEntity;
+        ResponseEntity<Void> responseEntity;
         try {
             responseEntity = devOpsClient.saveJobArtifactInfo(token, commit, ciPipelineId, ciJobId, artifactName, fileUrl);
         } catch (Exception e) {
             fileClient.deleteFileByUrl(tenantId, DevOpsConstants.DEV_OPS_CI_ARTIFACT_FILE_BUCKET, Collections.singletonList(fileUrl));
-            throw new DevopsCiInvalidException("error.save.artifact.information", e);
+            throw new DevopsCiInvalidException("error.save.job.artifact.information", artifactName, e);
         }
 
         // 判断响应
         if (responseEntity == null || responseEntity.getStatusCode() != HttpStatus.OK) {
             fileClient.deleteFileByUrl(tenantId, DevOpsConstants.DEV_OPS_CI_ARTIFACT_FILE_BUCKET, Collections.singletonList(fileUrl));
-            throw new DevopsCiInvalidException("error.save.artifact.information");
+            throw new DevopsCiInvalidException("error.save.job.artifact.information", artifactName);
         }
+        LOGGER.info("Finished UploadDevOpsArtifactFile: the tenant id {}, token {}, commit {}, ciPipelineId {}, ciJobId: {}, artifactName: {}, size: {}", tenantId, token, commit, ciPipelineId, ciJobId, artifactName, multipartFile.getSize());
         return fileUrl;
     }
 
@@ -111,7 +117,7 @@ public class FileC7nServiceImpl implements FileC7nService {
         //先删文件
         decodeUrls.forEach(url -> abstractFileService.deleteFile(bucketName, url, null));
         //数据库有数据，删数据库
-        if(!dbFileRecords.isEmpty()) {
+        if (!dbFileRecords.isEmpty()) {
             fileRepository.deleteFileByUrls(organizationId, bucketName, attachmentUuid, decodeUrls);
             dbFileRecords.forEach(r -> capacityUsedService.refreshCache(organizationId, -r.getFileSize()));
         }

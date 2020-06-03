@@ -14,11 +14,11 @@ import io.choerodon.file.infra.feign.DevOpsClient;
 public class DevOpsClientFallback implements DevOpsClient {
     @Override
     public ResponseEntity<Boolean> checkJobArtifactInfo(String token, String commit, Long ciPipelineId, Long ciJobId, String artifactName, Long fileByteSize) {
-        throw new DevopsCiInvalidException("error.check.artifact.information");
+        throw new DevopsCiInvalidException("error.check.artifact.information", artifactName);
     }
 
     @Override
-    public ResponseEntity saveJobArtifactInfo(String token, String commit, Long ciPipelineId, Long ciJobId, String artifactName, String fileUrl) {
-        throw new DevopsCiInvalidException("error.save.job.artifact.information");
+    public ResponseEntity<Void> saveJobArtifactInfo(String token, String commit, Long ciPipelineId, Long ciJobId, String artifactName, String fileUrl) {
+        throw new DevopsCiInvalidException("error.save.job.artifact.information", artifactName);
     }
 }
