@@ -86,17 +86,24 @@ public class FileC7nServiceImpl implements FileC7nService {
         }
 
         // 查询是否已经有这个文件
+        // 这个查询从数据库来说是不保证唯一性的, 但是从这个逻辑这里保证了唯一性
+        // 除非有另一处上传文件的地方使用了相同的bucket和命令规则, 否则, 不会出现误删除文件的情况
         List<File> files = fileRepository.selectByCondition(Condition.builder(File.class).where(
-                Sqls.custom().andEqualTo(File.FIELD_FILE_NAME, fileName)
+                Sqls.custom()
+                        .andEqualTo(File.FIELD_FILE_NAME, fileName)
                         .andEqualTo(File.FIELD_TENANT_ID, tenantId)
                         .andEqualTo(File.FIELD_BUCKET_NAME, DevOpsConstants.DEV_OPS_CI_ARTIFACT_FILE_BUCKET)
         ).build());
 
         if (!CollectionUtils.isEmpty(files)) {
-            File dbRecord = files.get(0);
-            // 有的话先删除了
-            if (dbRecord != null && dbRecord.getFileKey() != null) {
-                fileService.deleteFileByKey(tenantId, dbRecord.getFileKey());
+            if (files.size() > 1) {
+                LOGGER.warn("Unexpected size of the files with name {} in doUploadDevOpsArtifactFile. The size is {}", fileName, files.size());
+            }
+            for (File dbRecord : files) {
+                // 有的话先删除了, 保证唯一性
+                if (dbRecord != null && dbRecord.getFileKey() != null) {
+                    fileService.deleteFileByKey(tenantId, dbRecord.getFileKey());
+                }
             }
         }
 
