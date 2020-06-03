@@ -55,7 +55,7 @@ public interface DevOpsClient {
      */
     @ApiOperation("CI过程保存软件包信息")
     @PostMapping("/ci/save_artifact")
-    ResponseEntity saveJobArtifactInfo(
+    ResponseEntity<Void> saveJobArtifactInfo(
             @ApiParam(value = "应用服务token", required = true)
             @RequestParam(value = "token") String token,
             @ApiParam(value = "此次ci的commit", required = true)
