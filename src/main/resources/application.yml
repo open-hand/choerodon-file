@@ -30,9 +30,9 @@ spring:
   servlet:
     multipart:
       # 单个文件上传最大
-      maxFileSize: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:30MB}
+      maxFileSize: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:200MB}
       # 上传请求最大限制
-      maxRequestSize: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:30MB}
+      maxRequestSize: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:200MB}
   thymeleaf:
     prefix: classpath:/view/
     mode: LEGACYHTML5
