@@ -124,7 +124,7 @@ env:
     DOC_SERVER_CONVERTER_URL: http://converter.document.hzero.org/converter
     # 文件服务路径
     FILE_GATEWAY_URL: http://hzeronb.saas.hand-china.com/hfle
-    JAVA_OPTS: >
+    JAVA_OPTS: >-
       -Xms1024m
       -Xmx1536m
 
@@ -165,7 +165,7 @@ resources:
 ## 插件相关配置
 plugins:
   # skywalking agent 镜像地址
-  skywalkingAgentImage: registry.cn-shanghai.aliyuncs.com/c7n/skywalking-agent:6.5.0
+  skywalkingAgentImage: registry.cn-shanghai.aliyuncs.com/c7n/skywalking-agent:6.6.0
 
 ## service 相关设置
 ## ref: http://kubernetes.io/docs/user-guide/services/
