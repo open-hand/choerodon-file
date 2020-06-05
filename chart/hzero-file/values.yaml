@@ -53,9 +53,9 @@ podLabels: {}
 env:
   open:
     # 本实例服务端口
-    SERVER_PORT: 8030
+    SERVER_PORT: 8110
     # 本实例管理端口
-    MANAGEMENT_SERVER_PORT: 8031
+    MANAGEMENT_SERVER_PORT: 8111
 
     # Eureka 注册中心地址
     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://dev.hzero.org:8000/eureka/
@@ -183,11 +183,11 @@ service:
   ports:
     # 服务端口
     http:
-      port: 8030
+      port: 8110
       nodePort: 30122
     # 管理端口
     actuator:
-      port: 8031
+      port: 8111
       nodePort: 30123
   ## externalIPs 设置
   # externalIPs:
@@ -195,7 +195,7 @@ service:
   annotations: {}
     # prometheus.io/scrape: 'true'
   # prometheus.io/path: '/actuator/prometheus'
-  # prometheus.io/port: '8031'
+  # prometheus.io/port: '8111'
 
 ## 指标收集
 metrics:

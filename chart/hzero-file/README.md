@@ -49,7 +49,7 @@ Parameter | Description	| Default
 `metrics.path` | 收集应用的指标数据路径 | `/actuator/prometheus`
 `metrics.group` | 性能指标应用分组 | `spring-boot`
 `logs.parser` | 日志收集格式 | `spring-boot`
-`deployment.managementPort` | 服务管理端口 | `8031`
+`deployment.managementPort` | 服务管理端口 | `8111`
 `ingress.enabled` | 是否创建k8s ingress | `false`
 `env.open.SPRING_CLOUD_CONFIG_ENABLED` | 是否启用配置中心 | `true`
 `env.open.SPRING_CLOUD_CONFIG_URI` | 配置中心地址 | `http://register-server:8000`
@@ -65,7 +65,7 @@ Parameter | Description	| Default
 `env.open.CHOERODON_GATEWAY_URL` | 网关地址 | `http://api.staging.saas.hand-china.com`
 `service.enabled` | 是否创建k8s service | `false`
 `service.type` |  service类型 | `ClusterIP`
-`service.port` | service端口 | `8030`
+`service.port` | service端口 | `8110`
 `service.name` | service名称 | `hzero-file`
 `resources.limits` | k8s中容器能使用资源的资源最大值 | `3Gi`
 `resources.requests` | k8s中容器使用的最小资源需求 | `2Gi`
@@ -91,7 +91,7 @@ $ helm install c7n/hzero-file \
 
 ## 验证部署
 ```bash
-curl -s $(kubectl get po -n c7n-system -l choerodon.io/release=hzero-file -o jsonpath="{.items[0].status.podIP}"):8031/actuator/health | jq -r .status
+curl -s $(kubectl get po -n c7n-system -l choerodon.io/release=hzero-file -o jsonpath="{.items[0].status.podIP}"):8111/actuator/health | jq -r .status
 ```
 出现以下类似信息即为成功部署
 
