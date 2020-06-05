@@ -22,7 +22,7 @@ spec:
         - -c
         - cp -rfp /var/choerodon/* /tools
         image: {{ .Values.preJob.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: tools
         volumeMounts:
         - mountPath: /tools
@@ -30,6 +30,7 @@ spec:
       containers:
       - name: {{ .Release.Name }}-init-db
         image: {{ include "service.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/sh
         - -c

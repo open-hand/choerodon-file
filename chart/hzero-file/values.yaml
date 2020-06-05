@@ -3,7 +3,7 @@ preJob:
   # job 超时时间
   timeout: 1200
   # 工具 jar 包镜像库地址
-  image: registry.cn-shanghai.aliyuncs.com/c7n/dbtool:0.6.7
+  image: registry.cn-shanghai.aliyuncs.com/c7n/dbtool:0.7.0
   preInitDB:
     # 是否初始化hzero_file数据库
     enabled: true
@@ -58,7 +58,7 @@ env:
     MANAGEMENT_SERVER_PORT: 8031
 
     # Eureka 注册中心地址
-    EUREKA_DEFAULT_ZONE: http://dev.hzero.org:8000/eureka/
+    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://dev.hzero.org:8000/eureka/
     # 服务以IP地址注册
     EUREKA_INSTANCE_PREFER_IP_ADDRESS: true
     # 是否启用配置中心
@@ -124,9 +124,9 @@ env:
     DOC_SERVER_CONVERTER_URL: http://converter.document.hzero.org/converter
     # 文件服务路径
     FILE_GATEWAY_URL: http://hzeronb.saas.hand-china.com/hfle
-    JAVA_OPTS: >-
-      -Xms1024m
-      -Xmx1536m
+#    JAVA_OPTS: >-
+#      -Xms1024m
+#      -Xmx1536m
 
     ## Skywalking 配置参数
     # SKYWALKING_OPTS: >-
@@ -184,11 +184,11 @@ service:
     # 服务端口
     http:
       port: 8030
-      nodePort: 30092
+      nodePort: 30122
     # 管理端口
     actuator:
       port: 8031
-      nodePort: 30093
+      nodePort: 30123
   ## externalIPs 设置
   # externalIPs:
   #   - externalIp1
