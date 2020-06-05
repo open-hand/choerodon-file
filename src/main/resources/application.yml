@@ -16,7 +16,7 @@ spring:
     host: ${SPRING_REDIS_HOST:redis.hzero.org}
     port: ${SPRING_REDIS_PORT:6379}
     database: ${SPRING_REDIS_DATABASE:1}
-    jedis:
+    lettuce:
       pool:
         # 资源池中最大连接数
         # 默认8，-1表示无限制；可根据服务并发redis情况及服务端的支持上限调整
@@ -112,7 +112,7 @@ hzero:
     gateway-path: ${FILE_GATEWAY_URL:http://hzeronb.saas.hand-china.com/hfle}
   resource:
     # 匹配的资源才会解析JwtToken便于得到UserDetails
-    pattern: ${HZERO_RESOURCE_PATTERN:/v1/*,/hzero/*,/hfle/v1/*,/hfle/hzero/*}
+    pattern: ${HZERO_RESOURCE_PATTERN:/v1/*,/hzero/*,/hfle/v1/*,/hfle/hzero/*,/choerodon/v1}
 
 mybatis:
   mapperLocations: classpath*:/mapper/*.xml
