@@ -114,6 +114,12 @@ env:
     SERVER_UNDERTOW_BUFFER_SIZE: 1024
     # 日志级别
     LOG_LEVEL: info
+    # minio 地址
+    MINIO_ENDPOINT: http://minio.example.com/minio
+    # minio accessKey
+    MINIO_ACCESSKEY: accessKey
+    # minio secretKey
+    MINIO_SECRETKEY: secretKey
     # documentServer鉴权token
     DOC_SERVER_TOKEN: phmBqfsvkr
     # documentServer 地址

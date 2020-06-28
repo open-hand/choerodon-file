@@ -124,3 +124,8 @@ logging:
     org.apache.ibatis: ${LOG_LEVEL:info}
     io.choerodon: ${LOG_LEVEL:info}
     org.hzero: ${LOG_LEVEL:info}
+
+minio:
+  endpoint: http://minio.example.com/minio
+  accessKey: accessKey
+  secretKey: secretKey
