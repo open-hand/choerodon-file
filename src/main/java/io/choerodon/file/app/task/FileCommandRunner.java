@@ -52,6 +52,7 @@ public class FileCommandRunner implements CommandLineRunner {
             storageConfig.setTenantId(0L);
             storageConfig.setAccessControl(accessControl);
             storageConfig.setAccessKeyId(accessKey);
+            storageConfig.setAccessKeySecret(secretKey);
             storageConfig.setEndPoint(endpoint);
             storageConfig.setStorageCode(storageCode);
             storageConfig.setBucketPrefix("");
