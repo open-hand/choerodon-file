@@ -23,8 +23,12 @@ maven-deploy-snapshot:
   stage: build
   script:
     - mvn clean install -Dmaven.springboot.skip=true -DskipTests=true deploy -DaltDeploymentRepository=${CHOERODON_SNAPSHOT_REPOSITORY_ID}::default::${CHOERODON_SNAPSHOT_URL} -Ddeploy.classifier=exec
-  except:
-    - tags
+  # 只有master, release和hotfix分支才发包
+  only:
+    refs:
+    - master
+    - /^.*hotfix.*$/
+    - /^.*release.*$/
 
 maven-deploy-release:
   stage: build
