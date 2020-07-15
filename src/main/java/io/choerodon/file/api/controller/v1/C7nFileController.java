@@ -29,7 +29,6 @@ public class C7nFileController {
     @ApiOperation(value = "根据bucketName和文件的完全url删除文件")
     @PostMapping("/{organizationId}/delete-by-url")
     public ResponseEntity deleteByUrls(
-            @Encrypt
             @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
             @ApiParam(value = "桶名", required = true) @RequestParam("bucketName") String bucketName,
             @ApiParam(value = "文件地址", required = true) @RequestBody List<String> urls) {
