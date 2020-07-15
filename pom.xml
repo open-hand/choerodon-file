@@ -5,18 +5,23 @@
     <parent>
         <groupId>io.choerodon</groupId>
         <artifactId>choerodon-framework-parent</artifactId>
-        <version>0.17.0.RELEASE</version>
+        <version>0.17.1.RELEASE</version>
     </parent>
     <artifactId>hzero-file</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.23.1-SNAPSHOT</version>
     <name>hzero-file</name>
-    <description>Demo project for Spring Boot</description>
+    <description>File Service For Choerodon</description>
 
     <dependencies>
         <!-- 数据库驱动 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hzero.starter</groupId>
+            <artifactId>hzero-starter-keyencrypt</artifactId>
         </dependency>
 
         <!-- 依赖的服务 -->
