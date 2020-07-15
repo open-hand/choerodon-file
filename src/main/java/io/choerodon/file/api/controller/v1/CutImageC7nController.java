@@ -41,7 +41,6 @@ public class CutImageC7nController {
             @ApiParam(name = "endY", value = "裁剪的高度", example = "200")
             @RequestParam(required = false, name = "endY") Integer height,
             @ApiParam(value = "租户ID", required = true)
-            @Encrypt
             @PathVariable("organization_id") Long organizationId,
             @ApiParam(value = "桶名", required = true)
             @RequestParam("bucketName") String bucketName
