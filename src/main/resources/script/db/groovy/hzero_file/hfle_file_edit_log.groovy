@@ -30,4 +30,12 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_file_edit_log.groovy') {
         }
 
     }
+
+    changeSet(author: "hzero@hand-china.com", id: "2020-06-11-hfle_file_edit_log") {
+        addColumn(tableName: 'hfle_file_edit_log') {
+            column(name: "tenant_id", type: "bigint", defaultValue: "0", remarks: "租户ID,hpfm_tenant.tenant_id") {
+                constraints(nullable: "false")
+            }
+        }
+    }
 }
