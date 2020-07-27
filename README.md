@@ -30,6 +30,7 @@ hzero.file.shardingThreshold
 # 分片大小, 默认值1048576  (1M)
 hzero.file.defaultSharedSize
 
+
 # 分片页面需要使用的网关地址， 示例：http://hzerodevb.saas.hand-china.com/hfle
 hzero.file.gatewayPath
 
