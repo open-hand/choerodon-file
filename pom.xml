@@ -8,7 +8,7 @@
         <version>0.17.1.RELEASE</version>
     </parent>
     <artifactId>hzero-file</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.22.4.RELEASE</version>
     <name>hzero-file</name>
     <description>Demo project for Spring Boot</description>
 
