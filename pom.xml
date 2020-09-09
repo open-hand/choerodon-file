@@ -8,7 +8,7 @@
         <version>0.17.1.RELEASE</version>
     </parent>
     <artifactId>hzero-file</artifactId>
-    <version>0.24.0-SNAPSHOT</version>
+    <version>0.24.0-alpha.1-SNAPSHOT</version>
     <name>hzero-file</name>
     <description>File Service For Choerodon</description>
 
