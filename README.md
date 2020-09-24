@@ -1,47 +1,60 @@
-## 使用说明
+# choerodon-file
+文件管理
 
-### 概述
+## Introduction
+文件管理，为平台提供文件存储服务。此服务依赖[hzero-file](https://github.com/open-hand/hzero-file.git)未进行特性化开发；与`hzero-file`不同在于`choerodon-file`支持MINIO。
 
-文件服务为HZERO系统提供简单易用的文件存储功能，具备对接多种云对象存储服务的能力且易于拓展，同时支持服务器ftp协议文件上传，支持大文件断点续传、文件预览、word在线编辑、pdf水印
+## Documentation
+- 更多详情请参考`hzero-file`[中文文档](http://open.hand-china.com/document-center/doc/application/10029/10161?doc_id=4451)
 
-## 服务配置 
+## Features
+- 文件存储配置：对象存储配置，支持多种云服务
+- 文件上传配置：租户存储容量及指定目录存储文件格式限制
+- 文件汇总查询：记录所有上传的文件
+- 服务器上传配置：服务器上传配置，支持FTP/SFTP协议
+- 文件水印配置：文件的水印配置，支持文字水印和图片水印
 
-- `服务配置参数`
+## Architecture
+
+![](http://file.open.hand-china.com/hsop-image/doc_classify/0/2fb5eb72740f4022b49edbe16669c24d/20200713104656.png)
+
+## Dependencies
+
+
+* 服务依赖
+
+```xml
+<dependency>
+    <groupId>org.hzero</groupId>
+    <artifactId>hzero-file-saas</artifactId>
+    <version>${hzero.service.version}</version>
+</dependency>
 ```
-# 文件上传大小限制
-spring.servlet.multipart.max-file-size: 30MB
-spring.servlet.multipart.max-request-size: 30MB
 
-# 租户允许的最大存储容量,String类型,单位允许MB和KB,   默认值 10240MB  
-hzero.file.maxCapacitySize
+## Data initialization
 
-# 文件授权url的有效访问时间,Long类型,默认值300L
-hzero.file.defaultExpires
+- 创建数据库，本地创建 `hzero_file` 数据库和默认用户，示例如下：
 
-# 华为、百度跨域配置 List<String>  若不设置，表示允许所有跨域
-hzero.file.origins
+  ```sql
+  CREATE USER 'choerodon'@'%' IDENTIFIED BY "123456";
+  CREATE DATABASE hzero_file DEFAULT CHARACTER SET utf8;
+  GRANT ALL PRIVILEGES ON hzero_file.* TO choerodon@'%';
+  FLUSH PRIVILEGES;
+  ```
 
-# 对象存储忽略证书验证，默认值false
-hzero.file.ignoreCertCheck
+- 初始化 `hzero_file` 数据库，运行项目根目录下的 `init-database.sh`，该脚本默认初始化数据库的地址为 `localhost`，若有变更需要修改脚本文件
 
-# 分片上传阈值,超过时开启分片上传, 默认值5242880  (5M)
-hzero.file.shardingThreshold
+  ```sh
+  sh init-database.sh
+  ```
+  
+## Changelog
 
-# 分片大小, 默认值1048576  (1M)
-hzero.file.defaultSharedSize
+- [更新日志](./CHANGELOG.zh-CN.md)
 
 
-# 分片页面需要使用的网关地址， 示例：http://hzerodevb.saas.hand-china.com/hfle
-hzero.file.gatewayPath
+## Contributing
 
-# 文件预览的方式 String类型 允许的值： aspose  kkFileView  onlyOffice
-hzero.file.previewType
+欢迎参与项目贡献！比如提交PR修复一个bug，或者新建Issue讨论新特性或者变更。
 
-# kkFileView的文件预览地址，previewType为kkFileView时需要指定
-hzero.file.kkFileViewUrl
-```
-- `数据初始化`
-
-在`src/main/resources/script/db`下已有数据库初始化excel文件与groovy脚本示例，
-此模板在部署时有一个初始化数据的阶段，所以部署此模板创建好的应用之前，应该去数据库中
-创建一个数据库。并且部署时需要将对应的数据库名称填写正确；执行init-database.sh进行数据初始化。
+Copyright (c) 2020-present, CHOERODON
