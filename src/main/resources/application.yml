@@ -1,6 +1,6 @@
 spring:
   application:
-    name: hzero-file
+    name: choerodon-file
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://db.hzero.org:3306/hzero_file?useUnicode=true&characterEncoding=utf-8&useSSL=false}
     username: ${SPRING_DATASOURCE_USERNAME:hzero}
@@ -101,6 +101,25 @@ ribbon:
   MaxAutoRetriesNextServer: 1
 
 hzero:
+  service:
+    platform:
+      name: cherodon-platform
+    oauth:
+      name: choerodon-oauth
+    iam:
+      name: choerdon-iam
+    file:
+      name: choerodon-file
+    message:
+      name: choerodon-message
+    admin:
+      name: choerodon-admin
+    swagger:
+      name: choerodon-swagger
+    gateway:
+      name: choerodon-gateway
+    monitor:
+      name: choerodon-monitor
   file:
     preview-type: onlyOffice
     # kk-file-view-url: http://172.20.0.201:7700/onlinePreview
