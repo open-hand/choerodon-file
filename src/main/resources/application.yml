@@ -100,6 +100,10 @@ ribbon:
   MaxAutoRetries: 1
   MaxAutoRetriesNextServer: 1
 
+choerodon:
+  saga:
+    service: choerodon-asgard
+
 hzero:
   service:
     platform:
