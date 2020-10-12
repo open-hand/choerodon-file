@@ -7,9 +7,9 @@
         <artifactId>choerodon-framework-parent</artifactId>
         <version>0.17.1.RELEASE</version>
     </parent>
-    <artifactId>hzero-file</artifactId>
-    <version>0.24.0-alpha.1.RELEASE</version>
-    <name>hzero-file</name>
+    <artifactId>choerodon-file</artifactId>
+    <version>0.23.1.RELEASE</version>
+    <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
     <dependencies>

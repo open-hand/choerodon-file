@@ -1,4 +1,4 @@
-# Choerodon hzero-file
+# Choerodon choerodon-file
  文件服务为HZERO系统提供简单易用的文件存储功能，具备对接多种云对象存储服务的能力且易于拓展，同时支持服务器ftp协议文件上传，支持大文件断点续传、文件预览、word在线编辑、pdf水印
 
 ## Introduction
@@ -13,7 +13,7 @@ helm repo update
 ## Installing the Chart
 
 ```bash
-$ helm install c7n/hzero-file --name hzero-file
+$ helm install c7n/choerodon-file --name choerodon-file
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -21,7 +21,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ## Uninstalling the Chart
 
 ```bash
-$ helm delete hzero-file
+$ helm delete choerodon-file
 ```
 
 ## Configuration
@@ -29,7 +29,7 @@ $ helm delete hzero-file
 Parameter | Description	| Default
 --- |  ---  |  ---  
 `replicaCount` | pod运行数量 | `1`
-`image.repository` | 镜像库地址 | `registry.choerodon.com.cn/choerodon/hzero-file`
+`image.repository` | 镜像库地址 | `registry.choerodon.com.cn/choerodon/choerodon-file`
 `image.pullPolicy` | 镜像拉取策略 | `IfNotPresent`
 `preJob.timeout` | job超时时间 | `300`
 `preJob.image` | job镜像库地址 | `registry.cn-hangzhou.aliyuncs.com/choerodon-tools/dbtool:0.6.4`
@@ -59,7 +59,7 @@ Parameter | Description	| Default
 `service.enabled` | 是否创建k8s service | `false`
 `service.type` |  service类型 | `ClusterIP`
 `service.port` | service端口 | `8110`
-`service.name` | service名称 | `hzero-file`
+`service.name` | service名称 | `choerodon-file`
 `resources.limits` | k8s中容器能使用资源的资源最大值 | `3Gi`
 `resources.requests` | k8s中容器使用的最小资源需求 | `2Gi`
 
@@ -77,14 +77,14 @@ Parameter | Description
 `skywalking.collector.backend_service` | SkyWalking OAP 服务地址和端口配置
 
 ```bash
-$ helm install c7n/hzero-file \
-    --set env.open.SKYWALKING_OPTS="-javaagent:/agent/skywalking-agent.jar -Dskywalking.agent.application_code=hzero-file  -Dskywalking.agent.sample_n_per_3_secs=-1 -Dskywalking.collector.backend_service=oap.skywalking:11800" \
-    --name hzero-file
+$ helm install c7n/choerodon-file \
+    --set env.open.SKYWALKING_OPTS="-javaagent:/agent/skywalking-agent.jar -Dskywalking.agent.application_code=choerodon-file  -Dskywalking.agent.sample_n_per_3_secs=-1 -Dskywalking.collector.backend_service=oap.skywalking:11800" \
+    --name choerodon-file
 ```
 
 ## 验证部署
 ```bash
-curl -s $(kubectl get po -n c7n-system -l choerodon.io/release=hzero-file -o jsonpath="{.items[0].status.podIP}"):8111/actuator/health | jq -r .status
+curl -s $(kubectl get po -n c7n-system -l choerodon.io/release=choerodon-file -o jsonpath="{.items[0].status.podIP}"):8111/actuator/health | jq -r .status
 ```
 出现以下类似信息即为成功部署
 
