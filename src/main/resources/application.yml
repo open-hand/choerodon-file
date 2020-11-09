@@ -34,8 +34,18 @@ spring:
       # 上传请求最大限制
       maxRequestSize: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:200MB}
   thymeleaf:
-    prefix: classpath:/view/
-    mode: LEGACYHTML5
+     prefix: classpath:/view/
+     mode: LEGACYHTML5
+   resources:
+     # 资源缓存时间，单位秒
+     cache:
+       period: 3600
+     # 开启gzip压缩
+     chain.gzipped: true
+     # 启用缓存
+     chain.cache: true
+     # 静态资源映射
+     static-locations: classpath:/static/,classpath:/view/
   resources:
     # 资源缓存时间，单位秒
     cache:
@@ -133,6 +143,7 @@ hzero:
       call-back-url: ${DOC_SERVER_CALL_BACK:http://dev.hzero.org:8080/hfle/v1/only-office/save}
       converter-url: ${DOC_SERVER_CONVERTER_URL:http://document.hzero.org:8000/converter}
     gateway-path: ${FILE_GATEWAY_URL:http://hzeronb.saas.hand-china.com/hfle}
+    rootPath: /tmp/data/fragement #分片临时文件的存储路径(绝对路径)
   resource:
     # 匹配的资源才会解析JwtToken便于得到UserDetails
     pattern: ${HZERO_RESOURCE_PATTERN:/v1/*,/hzero/*,/hfle/v1/*,/hfle/hzero/*,/choerodon/v1}
