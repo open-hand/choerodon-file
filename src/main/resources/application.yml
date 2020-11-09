@@ -36,26 +36,16 @@ spring:
   thymeleaf:
      prefix: classpath:/view/
      mode: LEGACYHTML5
-   resources:
-     # 资源缓存时间，单位秒
-     cache:
-       period: 3600
-     # 开启gzip压缩
-     chain.gzipped: true
-     # 启用缓存
-     chain.cache: true
-     # 静态资源映射
-     static-locations: classpath:/static/,classpath:/view/
   resources:
-    # 资源缓存时间，单位秒
-    cache:
-      period: 3600
-    # 开启gzip压缩
-    chain.gzipped: true
-    # 启用缓存
-    chain.cache: true
-    # 静态资源映射
-    static-locations: classpath:/static/,classpath:/view/
+   # 资源缓存时间，单位秒
+   cache:
+     period: 3600
+   # 开启gzip压缩
+   chain.gzipped: true
+   # 启用缓存
+   chain.cache: true
+   # 静态资源映射
+   static-locations: classpath:/static/,classpath:/view/
   mvc:
     view:
       suffix: .html # 返回页面自动拼接.html后缀
