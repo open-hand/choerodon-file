@@ -13,7 +13,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class FileApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FileApplication.class, args);
+        try {
+            SpringApplication.run(FileApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
