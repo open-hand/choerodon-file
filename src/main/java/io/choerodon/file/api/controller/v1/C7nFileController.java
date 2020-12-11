@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.choerodon.core.iam.ResourceLevel;
+import io.choerodon.file.api.controller.vo.CiCdPipelineRecordVO;
 import io.choerodon.file.app.service.FileC7nService;
 import io.choerodon.swagger.annotation.Permission;
 
@@ -34,5 +35,15 @@ public class C7nFileController {
             @ApiParam(value = "文件地址", required = true) @RequestBody List<String> urls) {
         fileC7nService.deleteByUrls(organizationId, bucketName, urls);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @Permission(permissionPublic = true)
+    @ApiOperation(value = "Devops cicd流水线")
+    @PostMapping("/audit")
+    public ResponseEntity<Void> auditTest(
+            @ApiParam(value = "应用信息", required = true)
+            @RequestBody CiCdPipelineRecordVO devopsPipelineVO) {
+        fileC7nService.auidt(devopsPipelineVO);
+        return ResponseEntity.noContent().build();
     }
 }
