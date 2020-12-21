@@ -4,6 +4,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import io.choerodon.file.api.controller.vo.CiCdPipelineRecordVO;
+
 /**
  * @author scp
  * @date 2020/5/14
@@ -37,4 +39,6 @@ public interface FileC7nService {
      * @param urls
      */
     void deleteByUrls(Long organizationId, String bucketName, List<String> urls);
+
+    void auidt(CiCdPipelineRecordVO devopsPipelineVO);
 }
