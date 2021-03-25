@@ -34,7 +34,7 @@ spring:
       # 上传请求最大限制
       maxRequestSize: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:200MB}
   thymeleaf:
-     prefix: classpath:/view/
+     prefix: classpath:/templates/file/
      mode: LEGACYHTML5
   resources:
    # 资源缓存时间，单位秒
@@ -76,28 +76,31 @@ feign:
 hystrix:
   threadpool:
     default:
-      # 执行命令线程池的核心线程数，也是命令执行的最大并发量
-      # 默认10
-      coreSize: 1000
+      # 执行命令线程池的核心线程数，也是命令执行的最大并发量，默认10
+      coreSize: ${HYSTRIX_THREADPOOL_DEFAULT_CORE_SIZE:128}
       # 最大执行线程数
-      maximumSize: 1000
+      maximumSize: ${HYSTRIX_THREADPOOL_DEFAULT_MAXIMUM_SIZE:256}
   command:
     default:
       execution:
         isolation:
           thread:
-            # HystrixCommand 执行的超时时间，超时后进入降级处理逻辑。一个接口，理论的最佳响应速度应该在200ms以内，或者慢点的接口就几百毫秒。
-            # 默认 1000 毫秒，最高设置 2000足矣。如果超时，首先看能不能优化接口相关业务、SQL查询等，不要盲目加大超时时间，否则会导致线程堆积过多，hystrix 线程池卡死，最终服务不可用。
-            timeoutInMilliseconds: ${HYSTRIX_COMMAND_TIMEOUT_IN_MILLISECONDS:40000}
+            # hystrix熔断时间，12秒，需大于feign/ribbon的超时时间
+            timeoutInMilliseconds: ${HYSTRIX_COMMAND_TIMEOUT_IN_MILLISECONDS:12000}
 
 ribbon:
+  # Ribbon从DiscoveryClient同步Server的间隔时间，默认30秒
+  ServerListRefreshInterval: ${RIBBON_SERVER_LIST_REFRESH_INTERVAL:10000}
   # 客户端读取超时时间，超时时间要小于Hystrix的超时时间，否则重试机制就无意义了
-  ReadTimeout: ${RIBBON_READ_TIMEOUT:30000}
+  ReadTimeout: ${RIBBON_READ_TIMEOUT:5000}
   # 客户端连接超时时间
-  ConnectTimeout: ${RIBBON_CONNECT_TIMEOUT:3000}
-  # 访问实例失败(超时)，允许自动重试，设置重试次数，失败后会更换实例访问，请一定确保接口的幂等性，否则重试可能导致数据异常。
-  OkToRetryOnAllOperations: true
-  MaxAutoRetries: 1
+  ConnectTimeout: ${RIBBON_CONNECT_TIMEOUT:2000}
+  # 默认只重试 GET，设置为true时将重试所有类型，如 POST、PUT、DELETE
+  # 重试对Feign生效，对RestTemplate不生效，RestTemplate要重试需加入spring-retry依赖
+  OkToRetryOnAllOperations: false
+  # 同一个Server重试次数
+  MaxAutoRetries: 0
+  # 最多重试几个Server
   MaxAutoRetriesNextServer: 1
 
 choerodon:
