@@ -8,6 +8,22 @@ management:
       exposure:
         include: '*'
 
+#当需要暴露dubbo接口时，需要开启以下配置
+dubbo:
+  #  scan:
+  # 需要暴露dubbo时，需指定接口包路径
+  #    base-packages: org.hzero.file.app.service
+  protocols:
+    dubbo:
+      name: dubbo
+      port: 8112
+  registry:
+    #    address: zookeeper://127.0.0.1:2181
+    address: spring-cloud://localhost
+  cloud:
+    subscribed-services: hzero-file
+
+
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:default}
@@ -31,8 +47,10 @@ eureka:
   instance:
     # 以IP注册到注册中心
     preferIpAddress: ${EUREKA_INSTANCE_PREFER_IP_ADDRESS:true}
-    leaseRenewalIntervalInSeconds: 10
-    leaseExpirationDurationInSeconds: 30
+    # 续约间隔时间，默认30秒
+    leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:30}
+    # 实例故障摘除时间，默认90秒，实际是90*2=180秒，配置45就是90秒
+    leaseExpirationDurationInSeconds: ${EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:45}
     # 服务的一些元数据信息
     metadata-map:
       VERSION: ${CHART_VERSION:0.24.0-alpha.1.RELEASE}
@@ -41,5 +59,4 @@ eureka:
       # 注册中心地址
       defaultZone: ${EUREKA_DEFAULT_ZONE:http://dev.hzero.org:8000/eureka}
     registryFetchIntervalSeconds: 10
-    disable-delta: true
 
