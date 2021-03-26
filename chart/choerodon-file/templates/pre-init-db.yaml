@@ -39,11 +39,7 @@ spec:
           -Dspring.datasource.url="{{ .Values.preJob.preInitDB.datasource.url }}"
           -Dspring.datasource.username={{ .Values.preJob.preInitDB.datasource.username }}
           -Dspring.datasource.password={{ .Values.preJob.preInitDB.datasource.password }}
-          -Dspring.datasource.driver-class-name={{ .Values.preJob.preInitDB.datasource.driver }}
           -Dinstaller.jarPath=/choerodon/{{ .Chart.Name }}.jar
-          -Dlogging.level.root=info
-          -Ddata.version=1.3.0.RELEASE
-          -Dinstaller.mapping=script/db/service-mapping.xml
           -jar /var/choerodon/choerodon-tool-liquibase.jar;
         volumeMounts:
         - mountPath: /var/choerodon
