@@ -35,8 +35,7 @@ spec:
         - /bin/sh
         - -c
         - >
-          java -Ddata.init=true
-          -Dspring.datasource.url="{{ .Values.preJob.preInitDB.datasource.url }}"
+          java -Dspring.datasource.url="{{ .Values.preJob.preInitDB.datasource.url }}"
           -Dspring.datasource.username={{ .Values.preJob.preInitDB.datasource.username }}
           -Dspring.datasource.password={{ .Values.preJob.preInitDB.datasource.password }}
           -Dinstaller.jarPath=/choerodon/{{ .Chart.Name }}.jar

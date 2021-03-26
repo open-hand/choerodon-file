@@ -92,4 +92,9 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_storage_config.groovy') {
         }
         modifyDataType(tableName: "hfle_storage_config", columnName: 'access_key_secret', newDataType: "varchar(" + 480 * weight + ")")
     }
+
+    changeSet(author: 'hzero@hand-china.com', id: '2020-12-15-hfle_storage_config') {
+        dropUniqueConstraint(tableName:"hfle_storage_config", constraintName: "hfle_storage_config_u1")
+        addUniqueConstraint(tableName:"hfle_storage_config", constraintName: "hfle_storage_config_u1", columnNames:"storage_code,tenant_id")
+    }
 }
