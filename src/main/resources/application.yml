@@ -109,7 +109,7 @@ choerodon:
   file:
     system:
       # 当使用hzero的文件类型限制,也需要跳过限制的系统预设文件类型
-      file-type: csv,tgz,gz,xls,xlsx,png,bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp,avif
+      file-type: csv,tgz,gz,xls,xlsx,png,bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp,avif,yml,yaml,side,gor
 
 hzero:
   service:
