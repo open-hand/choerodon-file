@@ -37,7 +37,7 @@ import io.choerodon.core.exception.CommonException;
 @Service
 @org.apache.dubbo.config.annotation.Service
 public class UploadConfigServiceImpl extends BaseAppService implements UploadConfigService {
-    @Value("${choerodon.file.system.ile-type}")
+    @Value("${choerodon.file.system.file-type}")
     private String systemFileType;
 
     private final UploadConfigRepository uploadConfigRepository;
