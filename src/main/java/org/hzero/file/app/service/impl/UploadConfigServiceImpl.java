@@ -208,7 +208,9 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         if (uploadConfig == null) {
             UploadConfig queryDTO=new UploadConfig();
             queryDTO.setTenantId(tenantId);
-            queryDTO.setDirectory(directory);
+            if (StringUtils.isNotEmpty(directory)) {
+                queryDTO.setDirectory(directory);
+            }
             queryDTO.setBucketName(bucketName);
             uploadConfig = uploadConfigRepository.selectOne(queryDTO);
             // 写入缓存
