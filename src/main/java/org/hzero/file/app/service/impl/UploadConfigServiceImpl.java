@@ -134,6 +134,8 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
 
     @Override
     public void validateFileSize(File file, String fileCode) {
+        logger.info("======test logger555555555!!!!==========={}",file.getTenantId());
+
         // 检查租户剩余容量
         checkResidualCapacity(file.getTenantId());
 
@@ -157,6 +159,7 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         if (uploadConfig == null) {
             return;
         }
+        logger.info("======test logger566666666!!!!==========={}",file.getTenantId());
         Long fileSize = file.getFileSize();
         String[] str = file.getFileName().split("\\.");
         Assert.isTrue(str.length > 1, HfleMessageConstant.ERROR_LOAD_FILE_TYPE);
