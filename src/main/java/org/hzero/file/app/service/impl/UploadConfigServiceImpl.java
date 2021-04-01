@@ -204,8 +204,13 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
      */
     private UploadConfig getConfig(Long tenantId, String bucketName, String directory) {
         UploadConfig uploadConfig = UploadConfig.getCache(redisHelper, tenantId, bucketName, directory);
+        // todo 是bug hzero处理以后删除
         if (uploadConfig == null) {
-            uploadConfig = uploadConfigRepository.selectByTenantId(bucketName, directory, tenantId);
+            UploadConfig queryDTO=new UploadConfig();
+            queryDTO.setTenantId(tenantId);
+            queryDTO.setDirectory(directory);
+            queryDTO.setBucketName(bucketName);
+            uploadConfig = uploadConfigRepository.selectOne(queryDTO);
             // 写入缓存
             if (uploadConfig != null) {
                 UploadConfigVO configVO = new UploadConfigVO();
