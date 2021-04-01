@@ -105,6 +105,7 @@ public class FileServiceImpl extends BaseAppService implements FileService {
                     .setTenantId(tenantId)
                     .setStorageCode(storageCode)
                     .setAttachmentUuid(HfleConstant.DEFAULT_ATTACHMENT_UUID);
+            logger.info("======test logger2222222222222222!!!!==========={}",StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
             // todo 覆盖该类 唯一添加逻辑
             uploadConfigService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
 

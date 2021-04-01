@@ -20,6 +20,8 @@ import org.hzero.file.infra.constant.HfleConstant;
 import org.hzero.file.infra.constant.HfleMessageConstant;
 import org.hzero.file.infra.util.FileHeaderUtils;
 import org.hzero.mybatis.helper.SecurityTokenHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,8 @@ import io.choerodon.core.exception.CommonException;
 @Service
 @org.apache.dubbo.config.annotation.Service
 public class UploadConfigServiceImpl extends BaseAppService implements UploadConfigService {
+    private static final Logger logger = LoggerFactory.getLogger(UploadConfigServiceImpl.class);
+
     @Value("${choerodon.file.system.file-type}")
     private String systemFileType;
 
@@ -169,9 +173,11 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
             this.checkFileSize(unit, fileSize, size);
         } else {
             // todo 覆盖hzero该类唯一更改部分
+            logger.info("======test logger3333333333333!!!!===========");
             if (StringUtils.isNotEmpty(systemFileType)) {
                 uploadConfig.setFileFormat(uploadConfig.getFileFormat() + BaseConstants.Symbol.COMMA + systemFileType);
             }
+            logger.info("======test logger44444444!!!!==========={}",uploadConfig.getFileFormat());
             // 指定了文件格式
             List<String> fileFormat = Arrays.asList(uploadConfig.getFileFormat().split(BaseConstants.Symbol.COMMA));
             if (!fileFormat.contains(suffix)) {
