@@ -91,6 +91,7 @@ public class FileServiceImpl extends BaseAppService implements FileService {
     @Override
     public String uploadFragmentFile(Long tenantId, String bucketName, String directory, String fileName, String storageCode, String filePath, Long fileSize) {
         Path path = Paths.get(filePath);
+        logger.info("======test logger!!!!===========");
         try (InputStream is = new FileInputStream(filePath)) {
             String contentType = Files.probeContentType(path);
             // 组合文件对象
