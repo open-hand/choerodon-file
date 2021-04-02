@@ -94,6 +94,7 @@ public class FileServiceImpl extends BaseAppService implements FileService {
         logger.info("======test logger!!!!===========");
         try (InputStream is = new FileInputStream(filePath)) {
             String contentType = Files.probeContentType(path);
+            Files.size(path);
             // 组合文件对象
             File file = new File()
                     .setMd5(DigestUtils.md5DigestAsHex(is))
@@ -108,9 +109,10 @@ public class FileServiceImpl extends BaseAppService implements FileService {
             logger.info("======test logger2222222222222222!!!!==========={}",StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
             // todo 覆盖该类 唯一添加逻辑
 //            if (fileSize == null || fileSize == 0) {
-                fileSize = (long) is.available();
-                file.setFileSize(fileSize);
+//                fileSize = (long) is.available();
+                file.setFileSize(Files.size(path));
                 logger.info("======test logger77777777777777777777!!!!==========={}",fileSize);
+                logger.info("======test logger888888888888888888888!!!!==========={}", Files.size(path));
 //            }
             uploadConfigService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
 
