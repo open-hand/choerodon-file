@@ -91,7 +91,6 @@ public class FileServiceImpl extends BaseAppService implements FileService {
     @Override
     public String uploadFragmentFile(Long tenantId, String bucketName, String directory, String fileName, String storageCode, String filePath, Long fileSize) {
         Path path = Paths.get(filePath);
-        logger.info("======test logger!!!!===========");
         try (InputStream is = new FileInputStream(filePath)) {
             String contentType = Files.probeContentType(path);
             Files.size(path);
@@ -106,14 +105,6 @@ public class FileServiceImpl extends BaseAppService implements FileService {
                     .setTenantId(tenantId)
                     .setStorageCode(storageCode)
                     .setAttachmentUuid(HfleConstant.DEFAULT_ATTACHMENT_UUID);
-            logger.info("======test logger2222222222222222!!!!==========={}",StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
-            // todo 覆盖该类 唯一添加逻辑
-//            if (fileSize == null || fileSize == 0) {
-//                fileSize = (long) is.available();
-                file.setFileSize(Files.size(path));
-                logger.info("======test logger77777777777777777777!!!!==========={}",fileSize);
-                logger.info("======test logger888888888888888888888!!!!==========={}", Files.size(path));
-//            }
             uploadConfigService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
 
             // 验证数据

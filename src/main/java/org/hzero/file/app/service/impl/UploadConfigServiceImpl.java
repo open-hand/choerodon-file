@@ -134,8 +134,6 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
 
     @Override
     public void validateFileSize(File file, String fileCode) {
-        logger.info("======test logger555555555!!!!==========={}",file.getTenantId());
-
         // 检查租户剩余容量
         checkResidualCapacity(file.getTenantId());
 
@@ -159,7 +157,6 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         if (uploadConfig == null) {
             return;
         }
-        logger.info("======test logger566666666!!!!==========={}",file.getTenantId());
         Long fileSize = file.getFileSize();
         String[] str = file.getFileName().split("\\.");
         Assert.isTrue(str.length > 1, HfleMessageConstant.ERROR_LOAD_FILE_TYPE);
@@ -167,9 +164,6 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         String suffix = str[str.length - BaseConstants.Digital.ONE].toLowerCase();
         // 检查文件头与文件类型是否匹配
         FileHeaderUtils.checkFileType(fileCode, suffix);
-        logger.info("======test logger00000000000000!!!!==========={}",uploadConfig.getStorageSize());
-        logger.info("======test logger00000000000000!!!!==========={}",uploadConfig.getStorageUnit());
-        logger.info("======test logger00000000000000!!!!==========={}",file.getFileSize());
 
         // 校验配置
         if (StringUtils.isBlank(uploadConfig.getFileFormat())) {
@@ -180,11 +174,9 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
             this.checkFileSize(unit, fileSize, size);
         } else {
             // todo 覆盖hzero该类唯一更改部分
-            logger.info("======test logger3333333333333!!!!===========");
             if (StringUtils.isNotEmpty(systemFileType)) {
                 uploadConfig.setFileFormat(uploadConfig.getFileFormat() + BaseConstants.Symbol.COMMA + systemFileType);
             }
-            logger.info("======test logger44444444!!!!==========={}",uploadConfig.getFileFormat());
             // 指定了文件格式
             List<String> fileFormat = Arrays.asList(uploadConfig.getFileFormat().split(BaseConstants.Symbol.COMMA));
             if (!fileFormat.contains(suffix)) {
@@ -238,7 +230,6 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         } else if (HfleConstant.StorageUnit.KB.equals(unit) && fileSize > size * HfleConstant.ENTERING) {
             throw new CommonException(HfleMessageConstant.ERROR_FILE_SIZE, size + unit);
         }
-        logger.info("test！！！！！！！！！！！！！！！！！！！！！！{}", HfleConstant.ENTERING * size);
     }
 
     @Override
