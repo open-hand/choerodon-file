@@ -167,6 +167,10 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         String suffix = str[str.length - BaseConstants.Digital.ONE].toLowerCase();
         // 检查文件头与文件类型是否匹配
         FileHeaderUtils.checkFileType(fileCode, suffix);
+        logger.info("======test logger00000000000000!!!!==========={}",uploadConfig.getStorageSize());
+        logger.info("======test logger00000000000000!!!!==========={}",uploadConfig.getStorageUnit());
+        logger.info("======test logger00000000000000!!!!==========={}",file.getFileSize());
+
         // 校验配置
         if (StringUtils.isBlank(uploadConfig.getFileFormat())) {
             // 文件格式为空
@@ -234,6 +238,7 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         } else if (HfleConstant.StorageUnit.KB.equals(unit) && fileSize > size * HfleConstant.ENTERING) {
             throw new CommonException(HfleMessageConstant.ERROR_FILE_SIZE, size + unit);
         }
+        logger.info("test！！！！！！！！！！！！！！！！！！！！！！{}", HfleConstant.ENTERING * size);
     }
 
     @Override
