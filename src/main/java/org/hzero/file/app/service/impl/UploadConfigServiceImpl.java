@@ -162,6 +162,7 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         Assert.isTrue(str.length > 1, HfleMessageConstant.ERROR_LOAD_FILE_TYPE);
         // 文件后缀名
         String suffix = str[str.length - BaseConstants.Digital.ONE].toLowerCase();
+        logger.error("==================fileCode:{}", fileCode);
         // 检查文件头与文件类型是否匹配
         FileHeaderUtils.checkFileType(fileCode, suffix);
 
@@ -202,7 +203,7 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         UploadConfig uploadConfig = UploadConfig.getCache(redisHelper, tenantId, bucketName, directory);
         // todo 是bug hzero处理以后删除
         if (uploadConfig == null) {
-            UploadConfig queryDTO=new UploadConfig();
+            UploadConfig queryDTO = new UploadConfig();
             queryDTO.setTenantId(tenantId);
             if (StringUtils.isNotEmpty(directory)) {
                 queryDTO.setDirectory(directory);
