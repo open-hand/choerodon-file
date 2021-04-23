@@ -1,17 +1,15 @@
-package org.hzero.file.app.service.impl;
+package io.choerodon.file.app.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hzero.boot.platform.lov.annotation.ProcessLovValue;
-import org.hzero.core.base.BaseAppService;
 import org.hzero.core.base.BaseConstants;
 import org.hzero.core.redis.RedisHelper;
 import org.hzero.file.app.service.CapacityConfigService;
 import org.hzero.file.app.service.CapacityUsedService;
-import org.hzero.file.app.service.UploadConfigService;
+import org.hzero.file.app.service.impl.UploadConfigServiceImpl;
 import org.hzero.file.domain.entity.CapacityConfig;
 import org.hzero.file.domain.entity.File;
 import org.hzero.file.domain.entity.UploadConfig;
@@ -20,14 +18,11 @@ import org.hzero.file.domain.vo.UploadConfigVO;
 import org.hzero.file.infra.constant.HfleConstant;
 import org.hzero.file.infra.constant.HfleMessageConstant;
 import org.hzero.file.infra.util.FileHeaderUtils;
-import org.hzero.mybatis.helper.SecurityTokenHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import io.choerodon.core.exception.CommonException;
@@ -35,111 +30,35 @@ import io.choerodon.core.exception.CommonException;
 /**
  * 文件上传配置默认实现
  * c7n覆盖方法
- * {@link UploadConfigServiceImpl#validateFileSize(org.hzero.file.domain.entity.File, java.lang.String)}
+ * {@link UploadConfigHzeroServiceImpl#validateFileSize(org.hzero.file.domain.entity.File, java.lang.String)}
+ *
  * @author shuangfei.zhu@hand-china.com 2018/09/20 11:25
  */
-@Service
-@org.apache.dubbo.config.annotation.Service
-public class UploadConfigServiceImpl extends BaseAppService implements UploadConfigService {
-    private static final Logger logger = LoggerFactory.getLogger(UploadConfigServiceImpl.class);
+public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
+    private static final Logger logger = LoggerFactory.getLogger(UploadConfigHzeroServiceImpl.class);
 
     @Value("${choerodon.file.system.file-type}")
     private String systemFileType;
 
-    private final UploadConfigRepository uploadConfigRepository;
-    private final CapacityConfigService capacityConfigService;
-    private final CapacityUsedService capacityUsedService;
-    private final RedisHelper redisHelper;
+    private UploadConfigRepository uploadConfigRepository;
+    private CapacityConfigService capacityConfigService;
+    private CapacityUsedService capacityUsedService;
+    private RedisHelper redisHelper;
 
     @Autowired
-    public UploadConfigServiceImpl(UploadConfigRepository uploadConfigRepository,
-                                      CapacityConfigService capacityConfigService,
-                                      CapacityUsedService capacityUsedService,
-                                      RedisHelper redisHelper) {
-        this.uploadConfigRepository = uploadConfigRepository;
-        this.capacityConfigService = capacityConfigService;
-        this.capacityUsedService = capacityUsedService;
-        this.redisHelper = redisHelper;
+    public UploadConfigHzeroServiceImpl(UploadConfigRepository uploadConfigRepository,
+                                        CapacityConfigService capacityConfigService,
+                                        CapacityUsedService capacityUsedService,
+                                        RedisHelper redisHelper) {
+        super(uploadConfigRepository, capacityConfigService, capacityUsedService, redisHelper);
     }
 
-    @Override
-    public UploadConfig detailConfig(String bucketName, Long tenantId, String directory) {
-        if (directory == null) {
-            directory = StringUtils.EMPTY;
-        }
-        UploadConfig uploadConfig = uploadConfigRepository.selectOne(
-                new UploadConfig().setTenantId(tenantId).setBucketName(bucketName).setDirectory(directory));
-        // 若未获取租户配置，查询平台配置
-        if (uploadConfig == null) {
-            uploadConfig = uploadConfigRepository.selectOne(new UploadConfig()
-                    .setTenantId(BaseConstants.DEFAULT_TENANT_ID).setBucketName(bucketName).setDirectory(directory));
-        }
-        return uploadConfig;
-    }
-
-    @ProcessLovValue
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public UploadConfig createUploadConfig(Long tenantId, UploadConfig uploadConfig) {
-        if (tenantId != null) {
-            uploadConfig.setTenantId(tenantId);
-        }
-        if (uploadConfig.getDirectory() == null) {
-            uploadConfig.setDirectory(StringUtils.EMPTY);
-        }
-        uploadConfig.setDirectory(uploadConfig.getDirectory());
-        validObject(uploadConfig);
-        uploadConfig.validateRepeat(uploadConfigRepository);
-        uploadConfig.validateSize(capacityConfigService);
-        uploadConfigRepository.insertSelective(uploadConfig);
-        // 添加缓存
-        UploadConfigVO uploadConfigVO = new UploadConfigVO();
-        BeanUtils.copyProperties(uploadConfig, uploadConfigVO);
-        UploadConfig.refreshCache(redisHelper, uploadConfig.getTenantId(), uploadConfig.getBucketName(), uploadConfig.getDirectory(), uploadConfigVO);
-        return uploadConfig;
-    }
-
-    @ProcessLovValue
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public UploadConfig updateUploadConfig(Long tenantId, UploadConfig uploadConfig) {
-        if (tenantId != null) {
-            uploadConfig.setTenantId(tenantId);
-        }
-        if (uploadConfig.getDirectory() == null) {
-            uploadConfig.setDirectory(StringUtils.EMPTY);
-        }
-        uploadConfig.setDirectory(uploadConfig.getDirectory());
-        SecurityTokenHelper.validToken(uploadConfig);
-        validObject(uploadConfig);
-        uploadConfig.validateSize(capacityConfigService);
-        uploadConfigRepository.updateOptional(uploadConfig, UploadConfig.FIELD_CONTENT_TYPE,
-                UploadConfig.FIELD_STORAGE_UNIT, UploadConfig.FIELD_STORAGE_SIZE,
-                UploadConfig.FIELD_FILE_FORMAT, UploadConfig.MULTIPLE_FILE_FLAG);
-        // 更新缓存
-        UploadConfigVO uploadConfigVO = new UploadConfigVO();
-        BeanUtils.copyProperties(uploadConfig, uploadConfigVO);
-        UploadConfig.refreshCache(redisHelper, uploadConfig.getTenantId(), uploadConfig.getBucketName(), uploadConfig.getDirectory(), uploadConfigVO);
-        return uploadConfig;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void deleteUploadConfig(UploadConfig uploadConfig) {
-        SecurityTokenHelper.validToken(uploadConfig);
-        Long uploadConfigId = uploadConfig.getUploadConfigId();
-        uploadConfig = uploadConfigRepository.selectByPrimaryKey(uploadConfigId);
-        uploadConfigRepository.deleteByPrimaryKey(uploadConfigId);
-        // 清除缓存
-        UploadConfig.clearRedisCache(redisHelper, uploadConfig.getTenantId(), uploadConfig.getBucketName(), uploadConfig.getDirectory());
-    }
 
     @Override
     public void validateFileSize(File file, String fileCode) {
         validateFileSize(file, fileCode, true);
     }
 
-    @Override
     public void validateFileSize(File file, String fileCode, Boolean checkFileType) {
         // 检查租户剩余容量
         checkResidualCapacity(file.getTenantId());
@@ -239,39 +158,6 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         } else if (HfleConstant.StorageUnit.KB.equals(unit) && fileSize > size * HfleConstant.ENTERING) {
             throw new CommonException(HfleMessageConstant.ERROR_FILE_SIZE, size + unit);
         }
-    }
-
-    @Override
-    public void validateByteFileSize(File file) {
-        Long tenantId = file.getTenantId();
-        Long fileSize = file.getFileSize();
-        CapacityConfig capacityConfig = capacityConfigService.selectByTenantId(tenantId);
-        if (capacityConfig == null && !BaseConstants.DEFAULT_TENANT_ID.equals(tenantId)) {
-            // 获取平台配置
-            capacityConfig = capacityConfigService.selectByTenantId(BaseConstants.DEFAULT_TENANT_ID);
-        }
-        if (capacityConfig == null) {
-            // 未配置，不校验
-            return;
-        }
-        Long size = capacityConfig.getStorageSize();
-        String unit = capacityConfig.getStorageUnit();
-        this.checkFileSize(unit, fileSize, size);
-        checkResidualCapacity(file.getTenantId());
-    }
-
-    @Override
-    public UploadConfig detailUploadConfig(Long tenantId, Long uploadConfigId) {
-        UploadConfig uploadConfig = new UploadConfig();
-        uploadConfig.setTenantId(tenantId);
-        uploadConfig.setUploadConfigId(uploadConfigId);
-        return uploadConfigRepository.selectOne(uploadConfig);
-    }
-
-    @Override
-    @ProcessLovValue(targetField = {HfleConstant.BODY_LIST_CONFIG})
-    public UploadConfig detailUploadConfig(Long uploadConfigId) {
-        return uploadConfigRepository.selectByPrimaryKey(uploadConfigId);
     }
 
     /**
