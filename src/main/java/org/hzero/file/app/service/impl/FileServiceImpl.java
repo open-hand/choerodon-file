@@ -55,7 +55,8 @@ import io.choerodon.mybatis.pagehelper.domain.PageRequest;
 
 /**
  * 文件服务实现类
- *
+ *  c7n 覆盖方法 添加文件分片上传校验
+ *  {@link FileServiceImpl#uploadFragmentFile(java.lang.Long, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long)}
  * @author shuangfei.zhu@hand-china.com 2019/07/11 17:33
  */
 @org.apache.dubbo.config.annotation.Service
@@ -105,7 +106,7 @@ public class FileServiceImpl extends BaseAppService implements FileService {
                     .setTenantId(tenantId)
                     .setStorageCode(storageCode)
                     .setAttachmentUuid(HfleConstant.DEFAULT_ATTACHMENT_UUID);
-            uploadConfigService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType);
+            uploadConfigService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType, false);
 
             // 验证数据
             ValidUtils.valid(validator, file);

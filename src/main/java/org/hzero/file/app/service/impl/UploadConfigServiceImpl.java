@@ -3,6 +3,7 @@ package org.hzero.file.app.service.impl;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hzero.boot.platform.lov.annotation.ProcessLovValue;
 import org.hzero.core.base.BaseAppService;
@@ -33,7 +34,8 @@ import io.choerodon.core.exception.CommonException;
 
 /**
  * 文件上传配置默认实现
- *
+ * c7n覆盖方法
+ * {@link UploadConfigServiceImpl#validateFileSize(org.hzero.file.domain.entity.File, java.lang.String)}
  * @author shuangfei.zhu@hand-china.com 2018/09/20 11:25
  */
 @Service
@@ -51,9 +53,9 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
 
     @Autowired
     public UploadConfigServiceImpl(UploadConfigRepository uploadConfigRepository,
-                                   CapacityConfigService capacityConfigService,
-                                   CapacityUsedService capacityUsedService,
-                                   RedisHelper redisHelper) {
+                                      CapacityConfigService capacityConfigService,
+                                      CapacityUsedService capacityUsedService,
+                                      RedisHelper redisHelper) {
         this.uploadConfigRepository = uploadConfigRepository;
         this.capacityConfigService = capacityConfigService;
         this.capacityUsedService = capacityUsedService;
@@ -134,6 +136,11 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
 
     @Override
     public void validateFileSize(File file, String fileCode) {
+        validateFileSize(file, fileCode, true);
+    }
+
+    @Override
+    public void validateFileSize(File file, String fileCode, Boolean checkFileType) {
         // 检查租户剩余容量
         checkResidualCapacity(file.getTenantId());
 
@@ -162,9 +169,10 @@ public class UploadConfigServiceImpl extends BaseAppService implements UploadCon
         Assert.isTrue(str.length > 1, HfleMessageConstant.ERROR_LOAD_FILE_TYPE);
         // 文件后缀名
         String suffix = str[str.length - BaseConstants.Digital.ONE].toLowerCase();
-        logger.error("==================fileCode:{}", fileCode);
-        // 检查文件头与文件类型是否匹配
-        FileHeaderUtils.checkFileType(fileCode, suffix);
+        if (checkFileType != null && BooleanUtils.isTrue(checkFileType)) {
+            // 检查文件头与文件类型是否匹配
+            FileHeaderUtils.checkFileType(fileCode, suffix);
+        }
 
         // 校验配置
         if (StringUtils.isBlank(uploadConfig.getFileFormat())) {
