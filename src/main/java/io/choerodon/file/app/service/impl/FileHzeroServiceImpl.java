@@ -38,13 +38,13 @@ public class FileHzeroServiceImpl extends FileServiceImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(FileHzeroServiceImpl.class);
 
+    @Autowired
     private StoreFactory factory;
-    private UploadConfigService uploadConfigService;
+    @Autowired
     private Validator validator;
     @Autowired
     private UploadConfigHzeroServiceImpl uploadConfigHzeroService;
 
-    @Autowired
     public FileHzeroServiceImpl(StoreFactory factory,
                                 FileRepository fileRepository,
                                 UploadConfigService uploadConfigService,

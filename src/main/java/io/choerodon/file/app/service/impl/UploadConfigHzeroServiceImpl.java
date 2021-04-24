@@ -40,12 +40,15 @@ public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
     @Value("${choerodon.file.system.file-type}")
     private String systemFileType;
 
+    @Autowired
     private UploadConfigRepository uploadConfigRepository;
+    @Autowired
     private CapacityConfigService capacityConfigService;
+    @Autowired
     private CapacityUsedService capacityUsedService;
+    @Autowired
     private RedisHelper redisHelper;
 
-    @Autowired
     public UploadConfigHzeroServiceImpl(UploadConfigRepository uploadConfigRepository,
                                         CapacityConfigService capacityConfigService,
                                         CapacityUsedService capacityUsedService,
