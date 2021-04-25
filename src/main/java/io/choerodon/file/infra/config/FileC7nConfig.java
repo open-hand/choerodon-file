@@ -10,10 +10,9 @@ import org.hzero.file.app.service.UploadConfigService;
 import org.hzero.file.domain.repository.FileRepository;
 import org.hzero.file.domain.repository.UploadConfigRepository;
 import org.hzero.file.domain.service.factory.StoreFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.DependsOn;
 
 import io.choerodon.file.app.service.impl.FileHzeroServiceImpl;
 import io.choerodon.file.app.service.impl.UploadConfigHzeroServiceImpl;
@@ -28,8 +27,6 @@ import io.choerodon.file.app.service.impl.UploadConfigHzeroServiceImpl;
 public class FileC7nConfig {
 
     @Bean
-    @ConditionalOnClass(UploadConfigService.class)
-    @Order(1)
     public UploadConfigService uploadConfigService(UploadConfigRepository uploadConfigRepository,
                                                    CapacityConfigService capacityConfigService,
                                                    CapacityUsedService capacityUsedService,
@@ -39,7 +36,7 @@ public class FileC7nConfig {
 
 
     @Bean
-    @ConditionalOnClass(FileService.class)
+    @DependsOn("uploadConfigService")
     public FileService fileService(StoreFactory factory,
                                    FileRepository fileRepository,
                                    UploadConfigService uploadConfigService,
