@@ -47,3 +47,4 @@ package-lock.json
 **/lib/fonts/
 
 /liquibase
+customize/
