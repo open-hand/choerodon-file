@@ -57,8 +57,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hzero.starter</groupId>
-            <artifactId>hzero-starter-fragment</artifactId>
+            <groupId>io.choerodon</groupId>
+            <artifactId>choerodon-starter-fragment</artifactId>
+            <version>0.19.3-SNAPSHOT</version>
         </dependency>
 
 
