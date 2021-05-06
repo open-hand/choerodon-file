@@ -26,7 +26,7 @@
         <dependency>
             <groupId>io.choerodon</groupId>
             <artifactId>choerodon-starter-fragment</artifactId>
-            <version>0.19.2.RELEASE</version>
+            <version>0.19.3-SNAPSHOT</version>
         </dependency>
 
         <!-- 依赖的服务 -->
