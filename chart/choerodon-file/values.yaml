@@ -165,7 +165,7 @@ readinessProbe:
   failureThreshold: 3
 
 persistence:
-  enabled: true
+  enabled: false
   resourcePolicy: "keep"
   existingClaim: ""
   storageClass: ""
