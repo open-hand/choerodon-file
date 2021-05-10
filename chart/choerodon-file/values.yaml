@@ -164,6 +164,15 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
+persistence:
+  enabled: true
+  resourcePolicy: "keep"
+  existingClaim: ""
+  storageClass: ""
+  subPath: ""
+  accessMode: ReadWriteMany
+  size: 5Gi
+
 ## 资源请求和限制相关配置
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

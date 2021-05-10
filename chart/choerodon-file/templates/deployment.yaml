@@ -74,6 +74,11 @@ spec:
         volumeMounts:
         - name: skywalking-agent
           mountPath: /agent
+        - name: data
+          mountPath: /tmp/data/fragement
+{{- if not (empty .Values.persistence.subPath) }}
+          subPath: {{ .Values.persistence.subPath }}
+{{- end }}
         livenessProbe:
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -115,3 +120,8 @@ spec:
       volumes:
       - name: skywalking-agent
         emptyDir: {}
+{{- if .Values.persistence.enabled }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (.Release.Name) }}
+{{- end }}
