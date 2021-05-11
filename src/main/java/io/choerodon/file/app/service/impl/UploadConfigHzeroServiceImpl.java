@@ -63,6 +63,9 @@ public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
     }
 
     public void validateFileSize(File file, String fileCode, Boolean checkFileType) {
+        if (file.getFileName().contains("#")) {
+            throw new CommonException("filename.special.character", "#");
+        }
         // 检查租户剩余容量
         checkResidualCapacity(file.getTenantId());
 
