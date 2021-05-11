@@ -71,9 +71,7 @@ public class FileHzeroServiceImpl extends FileServiceImpl {
                     .setStorageCode(storageCode)
                     .setAttachmentUuid(HfleConstant.DEFAULT_ATTACHMENT_UUID);
             uploadConfigHzeroService.validateFileSize(file, StringUtils.isBlank(contentType) ? ContentTypeUtils.getContentType(fileName) : contentType, false);
-            if (fileName.contains("#")) {
-                throw new CommonException("filename.special.character");
-            }
+
             // 验证数据
             ValidUtils.valid(validator, file);
             StoreService storeService = factory.build(tenantId, storageCode);
