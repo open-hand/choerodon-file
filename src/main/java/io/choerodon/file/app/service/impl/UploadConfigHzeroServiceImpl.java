@@ -67,7 +67,8 @@ public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
             throw new CommonException("filename.special.character", "#");
         }
         // 检查租户剩余容量
-        checkResidualCapacity(file.getTenantId());
+        // 去掉容量校验
+//        checkResidualCapacity(file.getTenantId());
 
         Long tenantId = file.getTenantId();
         String bucketName = file.getBucketName();
