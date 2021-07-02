@@ -124,6 +124,37 @@ public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
         }
     }
 
+
+    /**
+     * 单独校验敏捷的大文件上传
+     * @param fileName
+     * @param tenantId
+     */
+    public void validateFileSize(String fileName, Long tenantId) {
+        if (fileName.contains("#")) {
+            throw new CommonException("filename.special.character", "#");
+        }
+        String bucketName = "agile-service";
+        // 获取租户配置
+        UploadConfig uploadConfig = getConfig(tenantId, bucketName, null);
+        if (!BaseConstants.DEFAULT_TENANT_ID.equals(tenantId) && uploadConfig == null) {
+            uploadConfig = getConfig(BaseConstants.DEFAULT_TENANT_ID, bucketName, null);
+        }
+        if (uploadConfig == null) {
+            return;
+        }
+        String[] str = fileName.split("\\.");
+        Assert.isTrue(str.length > 1, HfleMessageConstant.ERROR_LOAD_FILE_TYPE);
+        String suffix = str[str.length - BaseConstants.Digital.ONE].toLowerCase();
+        if (StringUtils.isNotEmpty(systemFileType)) {
+            uploadConfig.setFileFormat(uploadConfig.getFileFormat() + BaseConstants.Symbol.COMMA + systemFileType);
+        }
+        List<String> fileFormat = Arrays.asList(uploadConfig.getFileFormat().split(BaseConstants.Symbol.COMMA));
+        if (!fileFormat.contains(suffix)) {
+            throw new CommonException(HfleMessageConstant.ERROR_FILE_FORMAT_NOT_SITE);
+        }
+    }
+
     /**
      * 获取文件上传配置
      *

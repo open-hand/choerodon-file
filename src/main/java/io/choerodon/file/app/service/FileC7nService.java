@@ -1,10 +1,8 @@
 package io.choerodon.file.app.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
-import io.choerodon.file.api.controller.vo.CiCdPipelineRecordVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author scp
@@ -40,5 +38,5 @@ public interface FileC7nService {
      */
     void deleteByUrls(Long organizationId, String bucketName, List<String> urls);
 
-    void auidt(CiCdPipelineRecordVO devopsPipelineVO);
+    void upload(MultipartFile file, Long organizationId, Integer chunk, String guid, String fileName);
 }
