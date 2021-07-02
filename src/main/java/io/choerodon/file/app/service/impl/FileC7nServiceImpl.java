@@ -83,35 +83,4 @@ public class FileC7nServiceImpl implements FileC7nService {
             dbFileRecords.forEach(r -> capacityUsedService.refreshCache(organizationId, -r.getFileSize()));
         }
     }
-
-    @Override
-    @Async
-    public void auidt(CiCdPipelineRecordVO devopsPipelineVO) {
-        DevopsCdJobRecordDTO currentCdJob = devopsPipelineVO.getCurrentCdJob();
-        LOGGER.info(">>>>>>>>>>>>>> start audit >>>>>>>>>>>>>>");
-        LOGGER.info(">>>>>>>>>>>>>> sleep >>>>>>>>>>>>>>");
-        try {
-            Thread.sleep(1000 * 60);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LOGGER.info(">>>>>>>>>>>>>> end sleep >>>>>>>>>>>>>>");
-
-        Map<String, String> map = new HashMap<>();
-        map.put("pipeline_record_id",devopsPipelineVO.getCdRecordId().toString());
-        map.put("stage_record_id",currentCdJob.getStageRecordId().toString());
-        map.put("job_record_id",currentCdJob.getId().toString());
-        map.put("callback_token",currentCdJob.getCallbackToken());
-        map.put("approval_status",devopsPipelineVO.getCdRecordId() % 2 == 0 ? "true" : "false");
-
-
-        ResponseEntity<Void> responseEntity = null;
-        try {
-            restTemplate.put("http://172.23.16.92:30094/devops/v1/cd_pipeline/external_approval_task/callback_url", map);
-            if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-                throw new RestClientException("error.trigger.external.approval.task");
-            }
-        } catch (RestClientException e) {
-        }
-    }
 }

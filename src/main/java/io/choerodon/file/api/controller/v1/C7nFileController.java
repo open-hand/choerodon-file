@@ -36,14 +36,4 @@ public class C7nFileController {
         fileC7nService.deleteByUrls(organizationId, bucketName, urls);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
-    @Permission(permissionPublic = true)
-    @ApiOperation(value = "Devops cicd流水线")
-    @PostMapping("/audit")
-    public ResponseEntity<Void> auditTest(
-            @ApiParam(value = "应用信息", required = true)
-            @RequestBody CiCdPipelineRecordVO devopsPipelineVO) {
-        fileC7nService.auidt(devopsPipelineVO);
-        return ResponseEntity.noContent().build();
-    }
 }

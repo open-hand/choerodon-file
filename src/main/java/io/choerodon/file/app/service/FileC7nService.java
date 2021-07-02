@@ -40,5 +40,4 @@ public interface FileC7nService {
      */
     void deleteByUrls(Long organizationId, String bucketName, List<String> urls);
 
-    void auidt(CiCdPipelineRecordVO devopsPipelineVO);
 }
