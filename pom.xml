@@ -5,10 +5,10 @@
     <parent>
         <groupId>io.choerodon</groupId>
         <artifactId>choerodon-framework-parent</artifactId>
-        <version>0.19.2-SNAPSHOT</version>
+        <version>0.19.3.RELEASE</version>
     </parent>
     <artifactId>choerodon-file</artifactId>
-    <version>0.25.9.RELEASE</version>
+    <version>0.25.10.RELEASE</version>
     <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
