@@ -1,17 +1,19 @@
 package io.choerodon.file.api.controller.v1;
 
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.hzero.starter.keyencrypt.core.Encrypt;
+import org.hzero.core.util.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.iam.ResourceLevel;
-import io.choerodon.file.api.controller.vo.CiCdPipelineRecordVO;
 import io.choerodon.file.app.service.FileC7nService;
 import io.choerodon.swagger.annotation.Permission;
 
@@ -35,5 +37,29 @@ public class C7nFileController {
             @ApiParam(value = "文件地址", required = true) @RequestBody List<String> urls) {
         fileC7nService.deleteByUrls(organizationId, bucketName, urls);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @Permission(permissionLogin = true, level = ResourceLevel.ORGANIZATION)
+    @ApiOperation(value = "基于Multipart上传文件")
+    @PostMapping("/{organizationId}/files/multipart")
+    public ResponseEntity<String> uploadFile(
+            @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
+            @ApiParam(value = "桶名", required = true) @RequestParam("bucketName") String bucketName,
+            @ApiParam(value = "上传目录") @RequestParam(value = "directory", required = false) String directory,
+            @ApiParam(value = "文件名") @RequestParam(value = "fileName", required = false) String fileName,
+            @ApiParam(value = "默认类型 1:固定,0:不固定") @RequestParam(value = "docType", defaultValue = "0") Integer docType,
+            @ApiParam(value = "存储配置编码") @RequestParam(value = "storageCode", required = false) String storageCode,
+            @ApiParam(value = "上传文件") @RequestParam("file") MultipartFile multipartFile) {
+        return Results.success(fileC7nService.uploadMultipart(organizationId, bucketName, null, directory, fileName, docType, storageCode, multipartFile));
+    }
+
+    @Permission(permissionLogin = true, level = ResourceLevel.ORGANIZATION)
+    @ApiOperation(value = "下载文件")
+    @GetMapping("/{organizationId}/download/{file_id}")
+    public void downloadByUrl(
+            HttpServletRequest request, HttpServletResponse response,
+            @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
+            @ApiParam(value = "fileKey", required = true) @PathVariable("file_id") Long fileId) {
+        fileC7nService.downloadFile(request, response, organizationId, fileId);
     }
 }
