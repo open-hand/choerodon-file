@@ -4,7 +4,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -13,7 +12,6 @@ import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.mapper.FileMapper;
 import org.hzero.file.infra.util.CodeUtils;
-import org.hzero.starter.file.service.AbstractFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
 import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.mapper.C7nFileMapper;
 import io.choerodon.file.infra.utils.ImageUtils;
 
 /**
@@ -50,6 +49,8 @@ public class FileC7nServiceImpl implements FileC7nService {
     private FileRepository fileRepository;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private C7nFileMapper c7nFileMapper;
     @Autowired
     private CapacityUsedService capacityUsedService;
     @Autowired
@@ -76,15 +77,15 @@ public class FileC7nServiceImpl implements FileC7nService {
         List<String> decodeUrls = CodeUtils.decode(urls);
         StoreService storeService = storeFactory.build(organizationId, null);
         Assert.notNull(storeService, "hfle.error.file_store_config");
-        List<FileDTO> dbFileRecords =
-                fileRepository.selectFileByUrls(organizationId, bucketName, decodeUrls, attachmentUuid);
-        AbstractFileService abstractFileService = storeService.getAbstractFileService();
-        //先删文件
-        decodeUrls.forEach(url -> abstractFileService.deleteFile(bucketName, url, null));
-        //数据库有数据，删数据库
+        List<File> dbFileRecords =
+                c7nFileMapper.selectFileByUrls(organizationId, bucketName, decodeUrls, attachmentUuid);
         if (!dbFileRecords.isEmpty()) {
-            fileRepository.deleteFileByUrls(organizationId, bucketName, attachmentUuid, decodeUrls);
-            dbFileRecords.forEach(r -> capacityUsedService.refreshCache(organizationId, -r.getFileSize()));
+            dbFileRecords.forEach(r -> {
+                if (r.getFileId() == null) {
+                    throw new CommonException("error.get.file.id");
+                }
+                storeService.deleteFileByKey(r, organizationId);
+            });
         }
     }
 

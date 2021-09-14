@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.choerodon.file.infra.mapper.C7nFileMapper">
+    <select id="selectFileByUrls" resultType="org.hzero.file.domain.entity.File">
+        SELECT
+        hf.file_id,
+        hf.file_name,
+        hf.file_size,
+        hf.file_type,
+        hf.file_url,
+        hf.file_key,
+        hf.bucket_name,
+        hf.directory,
+        hf.creation_date
+        FROM
+        hfle_file hf
+        WHERE
+        hf.tenant_id = #{tenantId}
+        <if test="attachmentUUID != null and attachmentUUID != ''">
+            AND hf.attachment_uuid = #{attachmentUUID}
+        </if>
+        <if test="bucketName != null and bucketName != ''">
+            AND hf.bucket_name = #{bucketName}
+        </if>
+        AND hf.file_url IN
+        <foreach collection="urls" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
