@@ -110,7 +110,13 @@ choerodon:
     system:
       # 当使用hzero的文件类型限制,也需要跳过限制的系统预设文件类型
       file-type: csv,tgz,gz,xls,xlsx,png,bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp,avif,yml,yaml,side,gor
-
+    oss:
+     type: ${OSS_TYPE:minio}
+     endpoint: ${OSS_ENDPOINT:http://minio.example.com/minio}
+     accessKey: ${OSS_ACCESSKEY:accessKey}
+     secretKey: ${OSS_SECRETKEY:secretKey}
+     region: ${OSS_REGION:}
+     prefix: ${OSS_PREFIX:}
 hzero:
   service:
     platform:

@@ -8,7 +8,7 @@
         <version>1.1.0.RELEASE</version>
     </parent>
     <artifactId>choerodon-file</artifactId>
-    <version>1.1.0-alpha.1.RELEASE</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
@@ -47,7 +47,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-dubbo</artifactId>
-            <version>2.0.1.RELEASE</version>
             <optional>true</optional>
         </dependency>
 
@@ -76,6 +75,14 @@
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>0.4.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hzero.starter</groupId>
+            <artifactId>hzero-starter-file-aliyun</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hzero.starter</groupId>
+            <artifactId>hzero-starter-file-obs</artifactId>
         </dependency>
 
     </dependencies>
