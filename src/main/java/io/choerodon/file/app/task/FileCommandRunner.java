@@ -24,7 +24,7 @@ public class FileCommandRunner implements CommandLineRunner {
     private StorageConfigRepository storageConfigRepository;
     @Autowired
     private OssProperties ossProperties;
-    private static final String STORAGE_CODE_FORMAT = "choerodon_%s";
+    private static final String STORAGE_CODE_FORMAT = "CHOEEODON-%s";
 
     @Override
     public void run(String... strings) {
