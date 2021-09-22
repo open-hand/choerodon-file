@@ -18,6 +18,7 @@ public class OssProperties {
     private String accessKey;
     private String secretKey;
     private String prefix;
+    private String domain;
     private String region;
     private Boolean update = true;
 
@@ -75,5 +76,13 @@ public class OssProperties {
 
     public void setUpdate(Boolean update) {
         this.update = update;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

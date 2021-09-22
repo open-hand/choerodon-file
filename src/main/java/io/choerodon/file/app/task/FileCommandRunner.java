@@ -47,6 +47,7 @@ public class FileCommandRunner implements CommandLineRunner {
             storageConfig.setStorageCode(storageCode);
             storageConfig.setBucketPrefix(ossProperties.getPrefix());
             storageConfig.setDefaultFlag(1);
+            storageConfig.setDomain(ossProperties.getDomain());
             storageConfig.setStorageType(typeEnum.getTypeNum());
             storageConfig.setCreateBucketFlag(1);
             storageConfig.setRegion(ossProperties.getRegion());
