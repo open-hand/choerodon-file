@@ -121,12 +121,6 @@ env:
     SERVER_UNDERTOW_BUFFER_SIZE: 1024
     # 日志级别
     LOG_LEVEL: info
-    # minio 地址
-    MINIO_ENDPOINT: http://minio.example.com/minio
-    # minio accessKey
-    MINIO_ACCESSKEY: accessKey
-    # minio secretKey
-    MINIO_SECRETKEY: secretKey
     # documentServer鉴权token
     DOC_SERVER_TOKEN: phmBqfsvkr
     # documentServer 地址
@@ -137,9 +131,16 @@ env:
     DOC_SERVER_CONVERTER_URL: http://converter.document.hzero.org/converter
     # 文件服务路径
     FILE_GATEWAY_URL: http://hzeronb.saas.hand-china.com/hfle
-#    JAVA_OPTS: >-
-#      -Xms1024m
-#      -Xmx1536m
+    OSS_TYPE: MINIO # oss类型 MINIO、HUAWEI、ALIYUN
+    OSS_ENDPOINT: http://minio.example.com/minio # oss 地址
+    OSS_ACCESSKEY: accessKey # 账号
+    OSS_SECRETKEY: secretKey # 密码
+    OSS_DOMIAN: # 域名地址阿里云使用,可不填，默认为null
+    OSS_REGION: # Bucket所属地区华为云使用,可不填，默认为null
+    OSS_PREFIX: # Bucket前缀，可根据需要添加，默认为null
+    #    JAVA_OPTS: >-
+    #      -Xms1024m
+    #      -Xmx1536m
 
     ## Skywalking 配置参数
     # SKYWALKING_OPTS: >-

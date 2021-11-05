@@ -34,18 +34,18 @@ spring:
       # 上传请求最大限制
       maxRequestSize: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:200MB}
   thymeleaf:
-     prefix: classpath:/templates/file/
-     mode: LEGACYHTML5
+    prefix: classpath:/templates/file/
+    mode: LEGACYHTML5
   resources:
-   # 资源缓存时间，单位秒
-   cache:
-     period: 3600
-   # 开启gzip压缩
-   chain.gzipped: true
-   # 启用缓存
-   chain.cache: true
-   # 静态资源映射
-   static-locations: classpath:/static/,classpath:/view/
+    # 资源缓存时间，单位秒
+    cache:
+      period: 3600
+    # 开启gzip压缩
+    chain.gzipped: true
+    # 启用缓存
+    chain.cache: true
+    # 静态资源映射
+    static-locations: classpath:/static/,classpath:/view/
   mvc:
     view:
       suffix: .html # 返回页面自动拼接.html后缀
@@ -110,7 +110,14 @@ choerodon:
     system:
       # 当使用hzero的文件类型限制,也需要跳过限制的系统预设文件类型
       file-type: csv,tgz,gz,xls,xlsx,png,bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp,avif,yml,yaml,side,gor
-
+    oss:
+      type: ${OSS_TYPE:MINIO} # oss类型 MINIO、HUAWEI、ALIYUN
+      endpoint: ${OSS_ENDPOINT:http://minio.example.com/minio}
+      accessKey: ${OSS_ACCESSKEY:accessKey}
+      secretKey: ${OSS_SECRETKEY:secretKey}
+      domian: ${OSS_DOMIAN:} # 域名地址阿里云使用,可不填，默认为null
+      region: ${OSS_REGION:} # Bucket所属地区华为云使用,可不填，默认为null
+      prefix: ${OSS_PREFIX:} # Bucket前缀，可根据需要添加，默认为null
 hzero:
   service:
     platform:
@@ -162,8 +169,3 @@ logging:
     org.apache.ibatis: ${LOG_LEVEL:info}
     io.choerodon: ${LOG_LEVEL:info}
     org.hzero: ${LOG_LEVEL:info}
-
-minio:
-  endpoint: http://minio.example.com/minio
-  accessKey: accessKey
-  secretKey: secretKey
