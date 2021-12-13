@@ -8,7 +8,7 @@
         <version>1.1.1.RELEASE</version>
     </parent>
     <artifactId>choerodon-file</artifactId>
-    <version>1.1.0.RELEASE</version>
+    <version>1.1.2.RELEASE</version>
     <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
@@ -83,6 +83,12 @@
         <dependency>
             <groupId>org.hzero.starter</groupId>
             <artifactId>hzero-starter-file-obs</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j-core</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
