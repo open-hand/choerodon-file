@@ -83,6 +83,12 @@
         <dependency>
             <groupId>org.hzero.starter</groupId>
             <artifactId>hzero-starter-file-obs</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j-core</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
