@@ -14,7 +14,7 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_storage_config.groovy') {
         createTable(tableName: "hfle_storage_config", remarks: "") {
             column(name: "storage_config_id", type: "bigint", autoIncrement: true, remarks: "") { constraints(primaryKey: true) }
             column(name: "storage_type", type: "tinyint", remarks: "类型 1:阿里 2:华为 3:Minio 4:腾讯 5:七牛") { constraints(nullable: "false") }
-            column(name: "domain", type: "varchar(" + 120 * weight + ")", remarks: "绑定的域名")
+            column(name: "domain_url", type: "varchar(" + 120 * weight + ")", remarks: "绑定的域名")
             column(name: "end_point", type: "varchar(" + 120 * weight + ")", remarks: "EndPoint")
             column(name: "access_key_id", type: "varchar(" + 120 * weight + ")", remarks: "AccessKeyId")
             column(name: "access_key_secret", type: "varchar(" + 120 * weight + ")", remarks: "AccessKeySecret")
@@ -96,15 +96,5 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_storage_config.groovy') {
     changeSet(author: 'hzero@hand-china.com', id: '2020-12-15-hfle_storage_config') {
         dropUniqueConstraint(tableName: "hfle_storage_config", constraintName: "hfle_storage_config_u1")
         addUniqueConstraint(tableName: "hfle_storage_config", constraintName: "hfle_storage_config_u1", columnNames: "storage_code,tenant_id")
-    }
-
-    changeSet(author: 'hzero@hand-china.com', id: '2021-07-13-hfle_storage_config') {
-        def weight = 1
-        if (helper.isSqlServer()) {
-            weight = 2
-        } else if (helper.isOracle()) {
-            weight = 3
-        }
-        renameColumn(tableName: "hfle_storage_config", columnDataType: "varchar(" + 120 * weight + ")", newColumnName: "domain_url", oldColumnName: "domain", remarks: "绑定的域名")
     }
 }
