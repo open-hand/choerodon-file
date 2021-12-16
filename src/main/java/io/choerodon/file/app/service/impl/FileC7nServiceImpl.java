@@ -1,9 +1,9 @@
 package io.choerodon.file.app.service.impl;
 
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.mapper.C7nFileMapper;
+import io.choerodon.file.infra.utils.ImageUtils;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -24,10 +24,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.file.app.service.FileC7nService;
-import io.choerodon.file.infra.mapper.C7nFileMapper;
-import io.choerodon.file.infra.utils.ImageUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author scp
@@ -84,7 +83,7 @@ public class FileC7nServiceImpl implements FileC7nService {
                 if (r.getFileId() == null) {
                     throw new CommonException("error.get.file.id");
                 }
-                storeService.deleteFileByKey(r, organizationId);
+                fileService.deleteFileByKey(r.getFileId(), r.getFileKey());
             });
         }
     }

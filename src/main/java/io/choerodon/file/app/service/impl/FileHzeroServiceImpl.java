@@ -1,18 +1,13 @@
 package io.choerodon.file.app.service.impl;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javax.validation.Validator;
-
+import io.choerodon.core.exception.CommonException;
 import org.apache.commons.lang3.StringUtils;
 import org.hzero.core.util.ValidUtils;
 import org.hzero.file.app.service.UploadConfigService;
 import org.hzero.file.app.service.impl.FileServiceImpl;
 import org.hzero.file.domain.entity.File;
 import org.hzero.file.domain.repository.FileRepository;
+import org.hzero.file.domain.service.FileOperationLogService;
 import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.constant.HfleConstant;
@@ -24,7 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
 
-import io.choerodon.core.exception.CommonException;
+import javax.validation.Validator;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * 文件服务实现类
@@ -48,8 +48,9 @@ public class FileHzeroServiceImpl extends FileServiceImpl {
     public FileHzeroServiceImpl(StoreFactory factory,
                                 FileRepository fileRepository,
                                 UploadConfigService uploadConfigService,
-                                Validator validator) {
-        super(factory, fileRepository, uploadConfigService, validator);
+                                Validator validator,
+                                FileOperationLogService operationLogService) {
+        super(factory, fileRepository, uploadConfigService, validator, operationLogService);
     }
 
 

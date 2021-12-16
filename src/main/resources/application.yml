@@ -13,6 +13,10 @@ spring:
       # 等待连接池分配连接的最大时长（毫秒）
       connection-timeout: ${SPRING_DATASOURCE_CONNECTION_TIMEOUT:30000}
   redis:
+    # Redis连接超时时间
+    connect-timeout: ${SPRING_REDIS_CONNECT_TIMEOUT:2000}
+    # Redis读取超时时间s
+    timeout: ${SPRING_REDIS_READ_TIMEOUT:5000}
     host: ${SPRING_REDIS_HOST:redis.hzero.org}
     port: ${SPRING_REDIS_PORT:6379}
     database: ${SPRING_REDIS_DATABASE:1}
@@ -27,6 +31,16 @@ spring:
         # 当资源池连接用尽后，调用者的最大等待时间(单位为毫秒)
         # 默认 -1 表示永不超时，设置5秒
         max-wait: ${SPRING_REDIS_POOL_MAX_WAIT:5000}
+  web:
+    resources:
+      # 资源缓存时间，单位秒
+      cache:
+        period: 3600
+      chain:
+        # 开启压缩
+        compressed: true
+        # 启用缓存
+        cache: true
   servlet:
     multipart:
       # 单个文件上传最大
@@ -36,72 +50,49 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/file/
     mode: LEGACYHTML5
-  resources:
-    # 资源缓存时间，单位秒
-    cache:
-      period: 3600
-    # 开启gzip压缩
-    chain.gzipped: true
-    # 启用缓存
-    chain.cache: true
-    # 静态资源映射
-    static-locations: classpath:/static/,classpath:/view/
   mvc:
     view:
       suffix: .html # 返回页面自动拼接.html后缀
 
 server:
   undertow:
-    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接
-    # 默认值为8，建议设置每个CPU核心一个线程
-    io-threads: ${SERVER_UNDERTOW_IO_THREADS:4}
-    # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程
-    # 默认等于 io-threads*8，它的值设置取决于系统的负载，可适当调大该值
-    worker-threads: ${SERVER_UNDERTOW_WORKER_THREADS:128}
+    threads:
+      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接
+      # 默认值为8，建议设置每个CPU核心一个线程
+      io: ${SERVER_UNDERTOW_IO_THREADS:4}
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程
+      # 默认等于 io-threads*8，它的值设置取决于系统的负载，可适当调大该值
+      worker: ${SERVER_UNDERTOW_WORKER_THREADS:128}
     # 每块buffer的空间大小，越小空间被利用越充分
     # 不要设置太大，以免影响其他应用，合适即可
     buffer-size: ${SERVER_UNDERTOW_BUFFER_SIZE:1024}
-    # 是否分配的直接内存(NIO直接分配的堆外内存)
-    # 默认false
+    # 是否分配的直接内存(NIO直接分配的堆外内存)。默认false
     direct-buffers: true
-    # HTTP POST请求最大的大小
-    # 默认0，无限制，可设置10M
+    # HTTP POST请求最大的大小。默认0，无限制，可设置10M
     max-http-post-size: 10485760
-    allow-unescaped-characters-in-url: true
 
 feign:
-  hystrix:
-    enabled: true
-
-hystrix:
-  threadpool:
-    default:
-      # 执行命令线程池的核心线程数，也是命令执行的最大并发量，默认10
-      coreSize: ${HYSTRIX_THREADPOOL_DEFAULT_CORE_SIZE:128}
-      # 最大执行线程数
-      maximumSize: ${HYSTRIX_THREADPOOL_DEFAULT_MAXIMUM_SIZE:256}
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            # hystrix熔断时间，12秒，需大于feign/ribbon的超时时间
-            timeoutInMilliseconds: ${HYSTRIX_COMMAND_TIMEOUT_IN_MILLISECONDS:12000}
-
-ribbon:
-  # Ribbon从DiscoveryClient同步Server的间隔时间，默认30秒
-  ServerListRefreshInterval: ${RIBBON_SERVER_LIST_REFRESH_INTERVAL:10000}
-  # 客户端读取超时时间，超时时间要小于Hystrix的超时时间，否则重试机制就无意义了
-  ReadTimeout: ${RIBBON_READ_TIMEOUT:5000}
-  # 客户端连接超时时间
-  ConnectTimeout: ${RIBBON_CONNECT_TIMEOUT:2000}
-  # 默认只重试 GET，设置为true时将重试所有类型，如 POST、PUT、DELETE
-  # 重试对Feign生效，对RestTemplate不生效，RestTemplate要重试需加入spring-retry依赖
-  OkToRetryOnAllOperations: false
-  # 同一个Server重试次数
-  MaxAutoRetries: 0
-  # 最多重试几个Server
-  MaxAutoRetriesNextServer: 1
+  circuitbreaker:
+    # 启用断路器
+    enabled: ${FEIGN_CIRCUITBREAKER_ENABLED:true}
+  # 请求压缩配置
+  compression:
+    request:
+      # 配置请求GZIP压缩
+      enabled: ${FEIGN_COMPRESSION_REQUEST_ENABLED:true}
+      # 配置压缩数据大小的下限
+      min-request-size: ${FEIGN_COMPRESSION_REQUEST_MIN_REQUEST_SIZE:2048}
+  # Feign客户端配置
+  client:
+    config:
+      # Feign客户端默认配置
+      default:
+        # 连接超时
+        connectTimeout: ${FEIGN_CLIENT_CONFIG_DEFAULT_CONNECT_TIMEOUT:2000}
+        # 读取超时
+        readTimeout: ${FEIGN_CLIENT_CONFIG_DEFAULT_READ_TIMEOUT:5000}
+        # Feign日志级别：NONE/BASIC/HEADERS/FULL
+        loggerLevel: ${FEIGN_CLIENT_CONFIG_DEFAULT_LOGGER_LEVEL:FULL}
 
 choerodon:
   saga:
@@ -166,6 +157,10 @@ mybatis:
 
 logging:
   level:
+    org.springframework.cloud: info
+    io.github.resilience4j: info
+    com.netflix.discovery: warn
+    org.hzero.boot.platform.lov: info
     org.apache.ibatis: ${LOG_LEVEL:info}
     io.choerodon: ${LOG_LEVEL:info}
     org.hzero: ${LOG_LEVEL:info}
