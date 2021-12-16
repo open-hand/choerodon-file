@@ -29,6 +29,17 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:default}
   cloud:
+    loadbalancer:
+      retry:
+        # 是否重试
+        enabled: ${SPRING_CLOUD_LB_RETRY_ENABLED:false}
+        # 重试下一个实例的次数
+        max-retries-on-next-service-instance: ${SPRING_CLOUD_LB_RETRY_NEXT:1}
+        # 重试同一个实例的次数
+        max-retries-on-same-service-instance: ${SPRING_CLOUD_LB_RETRY_SAME:0}
+      cache:
+        # LB 中缓存实例的过期时间
+        ttl: ${SPRING_CLOUD_LB_CACHE_TTL:10s}
     config:
       fail-fast: false
       # 是否启用配置中心
