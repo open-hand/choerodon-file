@@ -54,7 +54,10 @@ spring:
         maxInterval: 2000
       # 标签
       label: ${SPRING_CLOUD_CONFIG_LABEL:}
-
+    # 由于引入了dubbo，禁用 resilience4j，不然会报错
+    circuitbreaker:
+      resilience4j:
+        enabled: false
 eureka:
   instance:
     # 以IP注册到注册中心
