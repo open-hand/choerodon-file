@@ -8,7 +8,7 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>choerodon-file</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>release-1.2.0-alpha.3</version>
     <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
