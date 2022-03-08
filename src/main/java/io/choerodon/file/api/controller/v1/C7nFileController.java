@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.hzero.core.util.Results;
+import org.hzero.file.domain.entity.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,23 @@ public class C7nFileController {
             @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
             @ApiParam(value = "fileKey", required = true) @PathVariable("file_id") Long fileId) {
         fileC7nService.downloadFile(request, response, organizationId, fileId);
+    }
+
+    @Permission(permissionWithin = true)
+    @ApiOperation(value = "根据文件id查询文件")
+    @PostMapping("/list_files")
+    public ResponseEntity<List<File>> listFileByIds(
+            @RequestBody List<Long> fileIds) {
+        return Results.success(fileC7nService.listFileByIds(fileIds));
+    }
+
+    @Permission(permissionWithin = true)
+    @ApiOperation(value = "删除文件")
+    @DeleteMapping("/{organizationId}/delete-by-id")
+    public ResponseEntity<Void> deleteById(
+            @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
+            @RequestParam("file_id") Long fileId) {
+        fileC7nService.deleteById(organizationId, fileId);
+        return Results.success();
     }
 }

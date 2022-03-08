@@ -4,6 +4,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hzero.file.api.dto.FileDTO;
+import org.hzero.file.domain.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -67,5 +69,19 @@ public interface FileC7nService {
      * @param fileId   文件id
      */
     void downloadFile(HttpServletRequest request, HttpServletResponse response, Long tenantId, Long fileId);
+
+    /**
+     * 根据文件Id查询文件
+     * @param fileIds
+     * @return
+     */
+    List<File> listFileByIds(List<Long> fileIds);
+
+    /**
+     * 删除文件
+     * @param tenantId
+     * @param fileId
+     */
+    void deleteById(Long tenantId, Long fileId);
 
 }
