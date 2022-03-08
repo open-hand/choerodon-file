@@ -1,9 +1,10 @@
 package io.choerodon.file.app.service.impl;
 
-import io.choerodon.core.exception.CommonException;
-import io.choerodon.file.app.service.FileC7nService;
-import io.choerodon.file.infra.mapper.C7nFileMapper;
-import io.choerodon.file.infra.utils.ImageUtils;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.base.Joiner;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -24,9 +25,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.mapper.C7nFileMapper;
+import io.choerodon.file.infra.utils.ImageUtils;
 
 /**
  * @author scp
@@ -101,5 +103,22 @@ public class FileC7nServiceImpl implements FileC7nService {
     public void downloadFile(HttpServletRequest request, HttpServletResponse response, Long tenantId, Long fileId) {
         File file = fileMapper.selectByPrimaryKey(fileId);
         fileService.downloadFile(request, response, tenantId, file.getBucketName(), file.getStorageCode(), file.getFileUrl());
+    }
+
+    @Override
+    public List<File> listFileByIds(List<Long> fileIds) {
+        return fileRepository.selectByIds(Joiner.on(",").join(fileIds));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(Long tenantId, Long fileId) {
+        if (ObjectUtils.isEmpty(fileId)) {
+            return;
+        }
+        StoreService storeService = storeFactory.build(tenantId, null);
+        Assert.notNull(storeService, "hfle.error.file_store_config");
+        File file = fileRepository.selectByPrimaryKey(fileId);
+        storeService.deleteFileByKey(file.getFileId(), file.getBucketName(), file.getFileKey(), file.getFileUrl(), file.getFileSize(), tenantId);
     }
 }
