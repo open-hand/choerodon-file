@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.hzero.core.util.Results;
 import org.hzero.file.domain.entity.File;
+import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,5 +81,12 @@ public class C7nFileController {
             @RequestParam("file_id") Long fileId) {
         fileC7nService.deleteById(organizationId, fileId);
         return Results.success();
+    }
+
+    @Permission(permissionWithin = true)
+    @ApiOperation(value = "查询默认的文件配置")
+    @GetMapping("/default/config")
+    public ResponseEntity<StorageConfig> queryDefaultConfig() {
+        return Results.success(fileC7nService.queryDefaultConfig());
     }
 }

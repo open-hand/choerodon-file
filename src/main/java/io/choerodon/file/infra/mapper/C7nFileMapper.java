@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.hzero.file.domain.entity.File;
+import org.hzero.file.domain.entity.StorageConfig;
 
 /**
  * @Author: scp
@@ -19,4 +20,5 @@ public interface C7nFileMapper {
                                 @Param("attachmentUUID") String attachmentUUID);
 
 
+    StorageConfig queryDefaultConfig();
 }

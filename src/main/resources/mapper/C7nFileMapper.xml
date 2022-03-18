@@ -27,4 +27,13 @@
             #{item}
         </foreach>
     </select>
+
+    <select id="queryDefaultConfig" resultType="org.hzero.file.domain.entity.StorageConfig">
+        SELECT
+        *
+        FROM
+        hfle_storage_config
+        WHERE
+        default_flag =1
+    </select>
 </mapper>

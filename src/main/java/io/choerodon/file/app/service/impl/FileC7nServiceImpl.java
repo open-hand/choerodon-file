@@ -8,6 +8,7 @@ import com.google.common.base.Joiner;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
+import org.hzero.file.domain.entity.StorageConfig;
 import org.hzero.file.domain.repository.FileRepository;
 import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
@@ -120,5 +121,10 @@ public class FileC7nServiceImpl implements FileC7nService {
         Assert.notNull(storeService, "hfle.error.file_store_config");
         File file = fileRepository.selectByPrimaryKey(fileId);
         storeService.deleteFileByKey(file.getFileId(), file.getBucketName(), file.getFileKey(), file.getFileUrl(), file.getFileSize(), tenantId);
+    }
+
+    @Override
+    public StorageConfig queryDefaultConfig() {
+        return c7nFileMapper.queryDefaultConfig();
     }
 }
