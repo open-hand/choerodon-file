@@ -4,8 +4,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.domain.entity.File;
+import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -72,6 +72,7 @@ public interface FileC7nService {
 
     /**
      * 根据文件Id查询文件
+     *
      * @param fileIds
      * @return
      */
@@ -79,9 +80,17 @@ public interface FileC7nService {
 
     /**
      * 删除文件
+     *
      * @param tenantId
      * @param fileId
      */
     void deleteById(Long tenantId, Long fileId);
+
+    /**
+     * 存想对路径需要 查询默认存储配置
+     *
+     * @return
+     */
+    StorageConfig queryDefaultConfig();
 
 }
