@@ -127,4 +127,9 @@ public class FileC7nServiceImpl implements FileC7nService {
     public StorageConfig queryDefaultConfig() {
         return c7nFileMapper.queryDefaultConfig();
     }
+
+    @Override
+    public File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl) {
+        return c7nFileMapper.queryFileWithUrl(organizationId, bucketName, fileUrl);
+    }
 }

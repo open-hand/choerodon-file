@@ -74,6 +74,17 @@ public class C7nFileController {
     }
 
     @Permission(permissionWithin = true)
+    @ApiOperation(value = "根据文件id查询文件")
+    @PostMapping("/{organizationId}/query_file_with_url")
+    public ResponseEntity<File> queryFileWithUrl(
+            @PathVariable Long organizationId,
+            @RequestParam("bucketName") String bucketName,
+            @RequestBody String fileUrl) {
+        return Results.success(fileC7nService.queryFileWithUrl(organizationId, bucketName, fileUrl));
+    }
+
+
+    @Permission(permissionWithin = true)
     @ApiOperation(value = "删除文件")
     @DeleteMapping("/{organizationId}/delete-by-id")
     public ResponseEntity<Void> deleteById(

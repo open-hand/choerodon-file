@@ -21,4 +21,8 @@ public interface C7nFileMapper {
 
 
     StorageConfig queryDefaultConfig();
+
+    File queryFileWithUrl(@Param("tenantId") Long tenantId,
+                          @Param("bucketName") String bucketName,
+                          @Param("url") String url);
 }

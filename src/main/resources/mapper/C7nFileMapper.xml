@@ -36,4 +36,21 @@
         WHERE
         default_flag =1
     </select>
+
+    <select id="queryFileWithUrl" resultType="org.hzero.file.domain.entity.File">
+        SELECT
+        hf.file_id,
+        hf.file_name,
+        hf.file_size,
+        hf.file_type,
+        hf.file_url,
+        hf.file_key,
+        hf.bucket_name,
+        hf.directory,
+        hf.creation_date
+        FROM
+        hfle_file hf
+        WHERE
+        hf.tenant_id = #{tenantId}  AND hf.bucket_name = #{bucketName}   AND hf.file_url=#{url}
+    </select>
 </mapper>
