@@ -93,4 +93,14 @@ public interface FileC7nService {
      */
     StorageConfig queryDefaultConfig();
 
+    /**
+     * 根据url查询文件
+     * 不对url进行解码
+     * 大文件上传文件url没有进行加码
+     *
+     * @param organizationId
+     * @param fileUrl
+     * @return
+     */
+    File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl);
 }
