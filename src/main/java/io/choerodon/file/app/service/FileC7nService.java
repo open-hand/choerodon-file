@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.domain.entity.File;
 import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,4 +104,6 @@ public interface FileC7nService {
      * @return
      */
     File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl);
+
+    List<File> queryFileDTOByIds(Long organizationId, List<String> fileKeys);
 }
