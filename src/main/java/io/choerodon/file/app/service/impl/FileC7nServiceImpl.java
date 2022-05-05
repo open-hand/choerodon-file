@@ -1,10 +1,13 @@
 package io.choerodon.file.app.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
+import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -131,5 +135,13 @@ public class FileC7nServiceImpl implements FileC7nService {
     @Override
     public File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl) {
         return c7nFileMapper.queryFileWithUrl(organizationId, bucketName, fileUrl);
+    }
+
+    @Override
+    public List<File> queryFileDTOByIds(Long organizationId, List<String> fileKeys) {
+        if (CollectionUtils.isEmpty(fileKeys)) {
+            return Collections.EMPTY_LIST;
+        }
+        return c7nFileMapper.queryFileByKeys(organizationId, fileKeys);
     }
 }

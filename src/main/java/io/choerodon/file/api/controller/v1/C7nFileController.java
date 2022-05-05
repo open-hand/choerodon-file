@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.hzero.core.util.Results;
+import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.domain.entity.File;
 import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +96,10 @@ public class C7nFileController {
     }
 
     @Permission(permissionWithin = true)
-    @ApiOperation(value = "查询默认的文件配置")
-    @GetMapping("/default/config")
-    public ResponseEntity<StorageConfig> queryDefaultConfig() {
-        return Results.success(fileC7nService.queryDefaultConfig());
+    @ApiOperation(value = "根据文件的keys集合 查询文件数据")
+    @PostMapping("{organization_id}/file/list")
+    public ResponseEntity<List<File>> queryFileDTOByIds(@PathVariable("organization_id") Long organizationId,
+                                                        @RequestBody List<String> fileKeys) {
+        return Results.success(fileC7nService.queryFileDTOByIds(organizationId, fileKeys));
     }
 }

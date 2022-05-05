@@ -25,4 +25,7 @@ public interface C7nFileMapper {
     File queryFileWithUrl(@Param("tenantId") Long tenantId,
                           @Param("bucketName") String bucketName,
                           @Param("url") String url);
+
+    List<File> queryFileByKeys(@Param("organizationId") Long organizationId,
+                                 @Param("fileKeys") List<String> fileKeys);
 }
