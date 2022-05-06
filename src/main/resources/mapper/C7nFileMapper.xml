@@ -64,7 +64,7 @@
           hf.bucket_name,
           hf.directory,
           hf.creation_date,
-          hf.creation_by,
+          hf.created_by,
           hf.last_updated_by,
           hf.last_update_date
         FROM
