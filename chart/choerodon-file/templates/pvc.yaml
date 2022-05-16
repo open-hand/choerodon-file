@@ -1,27 +1,29 @@
-{{- if .Values.persistence.enabled }}
-{{- if and (not .Values.persistence.existingClaim) }}
+{{- if (include "server.createPVC" .) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name }}
-  {{- if eq .Values.persistence.resourcePolicy "keep" }}
+  name: {{ include "common.names.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.persistence.annotations .Values.commonAnnotations }}
   annotations:
-    helm.sh/resource-policy: keep
-  {{- end }}
-  labels:
-{{ include "service.labels.standard" . | indent 4 }}
-spec:
-  accessModes: 
-    - {{ .Values.persistence.accessMode }}
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size }}
-  {{- if .Values.persistence.storageClass }}
-    {{- if eq "-" .Values.persistence.storageClass }}
-  storageClassName: ""
-    {{- else }}
-  storageClassName: {{ .Values.persistence.storageClass }}
+    {{- if .Values.persistence.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.persistence.annotations "context" $ ) | nindent 4 }}
+    {{- end }}
+    {{- if .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
     {{- end }}
   {{- end }}
-{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  {{- include "common.storage.class" (dict "persistence" .Values.persistence "global" .Values.global) | nindent 2 }}
 {{- end }}
