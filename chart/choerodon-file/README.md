@@ -1,6 +1,6 @@
 # choerodon-file
 
-Gateway of Choerodon.
+File service of Choerodon.
 
 ## Installing the Chart
 

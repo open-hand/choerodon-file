@@ -110,7 +110,7 @@ spec:
         {{- include "common.tplvalues.render" (dict "value" .Values.initContainers "context" $) | nindent 8 }}
         {{- end }}
       containers:
-        - name: server
+        - name: {{ .Chart.Name | quote }}
           image: {{ include "base.image" . }}
           imagePullPolicy: {{ .Values.base.pullPolicy | quote }}
           workingDir: {{ include "server.workingDir" . }}
