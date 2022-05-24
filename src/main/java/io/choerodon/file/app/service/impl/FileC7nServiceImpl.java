@@ -144,4 +144,15 @@ public class FileC7nServiceImpl implements FileC7nService {
         }
         return c7nFileMapper.queryFileByKeys(organizationId, fileKeys);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateFile(Long organizationId, File file) {
+        File fileDTO = fileMapper.selectByPrimaryKey(file.getFileId());
+        if (fileDTO == null) {
+            return;
+        }
+        fileDTO.setFileName(file.getFileName());
+        fileMapper.updateByPrimaryKey(fileDTO);
+    }
 }
