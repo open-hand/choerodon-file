@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.hzero.core.util.Results;
-import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.domain.entity.File;
-import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,5 +99,15 @@ public class C7nFileController {
     public ResponseEntity<List<File>> queryFileDTOByIds(@PathVariable("organization_id") Long organizationId,
                                                         @RequestBody List<String> fileKeys) {
         return Results.success(fileC7nService.queryFileDTOByIds(organizationId, fileKeys));
+    }
+
+    @Permission(permissionWithin = true)
+    @ApiOperation(value = "修改文件")
+    @PutMapping("/{organization_id}/update_file")
+    public ResponseEntity<Void> updateFile(
+            @ApiParam(value = "租户ID", required = true) @PathVariable(name = "organization_id") Long organizationId,
+            @RequestBody File file) {
+        fileC7nService.updateFile(organizationId, file);
+        return Results.success();
     }
 }
