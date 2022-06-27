@@ -70,8 +70,7 @@
         FROM
           hfle_file hf
         WHERE
-          hf.tenant_id = #{organizationId}
-        and hf.file_key in
+          hf.file_key in
         <foreach collection="fileKeys" separator="," item="fileKey" open="(" close=")">
             #{fileKey,jdbcType=VARCHAR}
         </foreach>

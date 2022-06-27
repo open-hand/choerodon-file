@@ -106,4 +106,6 @@ public interface FileC7nService {
     File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl);
 
     List<File> queryFileDTOByIds(Long organizationId, List<String> fileKeys);
+
+    void updateFile(Long organizationId, File file);
 }
