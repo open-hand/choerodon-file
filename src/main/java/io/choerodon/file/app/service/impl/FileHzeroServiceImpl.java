@@ -36,8 +36,6 @@ import java.nio.file.Paths;
 
 public class FileHzeroServiceImpl extends FileServiceImpl {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileHzeroServiceImpl.class);
-
     @Autowired
     private StoreFactory factory;
     @Autowired

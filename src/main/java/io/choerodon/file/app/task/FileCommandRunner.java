@@ -21,7 +21,6 @@ import io.choerodon.file.infra.enums.OssTypeEnum;
  */
 @Component
 public class FileCommandRunner implements CommandLineRunner {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileCommandRunner.class);
     @Autowired
     private StorageConfigRepository storageConfigRepository;
     @Autowired

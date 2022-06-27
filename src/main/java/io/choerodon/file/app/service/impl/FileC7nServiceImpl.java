@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Joiner;
-import org.apache.commons.lang3.StringUtils;
-import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -17,8 +15,6 @@ import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.mapper.FileMapper;
 import org.hzero.file.infra.util.CodeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +38,6 @@ import io.choerodon.file.infra.utils.ImageUtils;
  */
 @Service
 public class FileC7nServiceImpl implements FileC7nService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileC7nServiceImpl.class);
 
     private static final String URL_FORMAT = "%s/choerodon/v1/%s/download/%s";
     @Value("${hzero.file.gateway-path}")
