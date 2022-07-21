@@ -1,13 +1,19 @@
 package io.choerodon.file.api.controller.v1;
 
+import static io.choerodon.file.infra.constant.CommonConstant.FOLDER;
+import static io.choerodon.file.infra.constant.CommonConstant.STORAGE_CODE_FORMAT;
+
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.hzero.core.base.BaseConstants;
 import org.hzero.core.util.Results;
 import org.hzero.file.domain.entity.File;
+import org.hzero.fragment.service.FragmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.iam.ResourceLevel;
 import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.config.OssProperties;
 import io.choerodon.swagger.annotation.Permission;
 
 /**
@@ -27,6 +34,10 @@ import io.choerodon.swagger.annotation.Permission;
 public class C7nFileController {
     @Autowired
     private FileC7nService fileC7nService;
+    @Autowired
+    private OssProperties ossProperties;
+    @Autowired
+    private FragmentService fragmentService;
 
 
     @Permission(permissionPublic = true, level = ResourceLevel.SITE)
@@ -109,5 +120,18 @@ public class C7nFileController {
             @RequestBody File file) {
         fileC7nService.updateFile(organizationId, file);
         return Results.success();
+    }
+
+    @PostMapping("/{organizationId}/upload/combine")
+    @ApiOperation(value = "c7n分片文件合并")
+    @Permission(permissionLogin = true)
+    @ResponseBody
+    public ResponseEntity<String> fragmentCombineBlock(@PathVariable Long organizationId, @RequestBody Map<String, String> args) {
+        // 设置文件路径前缀生成方式 默认folder
+        String prefix = args.getOrDefault("prefix", "folder");
+        if (prefix.equalsIgnoreCase("folder")) {
+            args.put("storageCode", String.format(STORAGE_CODE_FORMAT, ossProperties.getType()) + BaseConstants.Symbol.MIDDLE_LINE + FOLDER);
+        }
+        return Results.success(fragmentService.combineUpload(args.get("guid"), organizationId, args.get("fileName"), args));
     }
 }

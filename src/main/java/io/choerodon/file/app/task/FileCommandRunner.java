@@ -1,5 +1,8 @@
 package io.choerodon.file.app.task;
 
+import static io.choerodon.file.infra.constant.CommonConstant.FOLDER;
+import static io.choerodon.file.infra.constant.CommonConstant.STORAGE_CODE_FORMAT;
+
 import org.hzero.core.base.BaseConstants;
 import org.hzero.file.domain.entity.StorageConfig;
 import org.hzero.file.domain.repository.StorageConfigRepository;
@@ -25,8 +28,7 @@ public class FileCommandRunner implements CommandLineRunner {
     private StorageConfigRepository storageConfigRepository;
     @Autowired
     private OssProperties ossProperties;
-    private static final String STORAGE_CODE_FORMAT = "CHOERODON-%s";
-    private static final String FOLDER = "FOLDER";
+
 
     @Override
     public void run(String... strings) {
