@@ -1,11 +1,16 @@
 package io.choerodon.file.app.service.impl;
 
+import static io.choerodon.file.infra.constant.CommonConstant.FOLDER;
+import static io.choerodon.file.infra.constant.CommonConstant.STORAGE_CODE_FORMAT;
+
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
+import org.hzero.core.base.BaseConstants;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -28,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
 import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.config.OssProperties;
 import io.choerodon.file.infra.mapper.C7nFileMapper;
 import io.choerodon.file.infra.utils.ImageUtils;
 
@@ -57,6 +63,8 @@ public class FileC7nServiceImpl implements FileC7nService {
     @Autowired
     @Qualifier("restTemplateForIp")
     private RestTemplate restTemplate;
+    @Autowired
+    private OssProperties ossProperties;
 
     @Override
     public String cutImage(Long tenantId, String bucketName, MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
@@ -91,7 +99,11 @@ public class FileC7nServiceImpl implements FileC7nService {
     }
 
     @Override
-    public String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory, String fileName, Integer docType, String storageCode, MultipartFile multipartFile) {
+    public String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory, String fileName,
+                                  Integer docType, String storageCode, MultipartFile multipartFile, String prefix) {
+        if (prefix.equalsIgnoreCase("folder")) {
+            storageCode = getStorageCode(storageCode);
+        }
         String minioUrl = fileService.uploadMultipart(tenantId, bucketName, null, directory, fileName, docType, storageCode, multipartFile);
         File queryDTO = new File();
         queryDTO.setTenantId(tenantId).setBucketName(bucketName).setFileName(fileName).setFileUrl(minioUrl);
@@ -149,5 +161,14 @@ public class FileC7nServiceImpl implements FileC7nService {
         }
         fileDTO.setFileName(file.getFileName());
         fileMapper.updateByPrimaryKey(fileDTO);
+    }
+
+    @Override
+    public String getStorageCode(String storageCode) {
+        if (StringUtils.isEmpty(storageCode)) {
+            return String.format(STORAGE_CODE_FORMAT, ossProperties.getType() + BaseConstants.Symbol.MIDDLE_LINE + FOLDER);
+        } else {
+            return storageCode;
+        }
     }
 }

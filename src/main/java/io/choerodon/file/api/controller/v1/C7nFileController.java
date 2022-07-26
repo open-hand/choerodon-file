@@ -63,7 +63,7 @@ public class C7nFileController {
             @ApiParam(value = "默认类型 1:固定,0:不固定") @RequestParam(value = "docType", defaultValue = "0") Integer docType,
             @ApiParam(value = "存储配置编码") @RequestParam(value = "storageCode", required = false) String storageCode,
             @ApiParam(value = "上传文件") @RequestParam("file") MultipartFile multipartFile) {
-        return Results.success(fileC7nService.uploadMultipart(organizationId, bucketName, null, directory, fileName, docType, storageCode, multipartFile));
+        return Results.success(fileC7nService.uploadMultipart(organizationId, bucketName, null, directory, fileName, docType, storageCode, multipartFile,prefix));
     }
 
     @Permission(permissionLogin = true, level = ResourceLevel.ORGANIZATION)
