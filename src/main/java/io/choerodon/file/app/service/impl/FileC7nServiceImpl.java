@@ -104,11 +104,7 @@ public class FileC7nServiceImpl implements FileC7nService {
         if (prefix.equalsIgnoreCase("folder")) {
             storageCode = getStorageCode(storageCode);
         }
-        String minioUrl = fileService.uploadMultipart(tenantId, bucketName, null, directory, fileName, docType, storageCode, multipartFile);
-        File queryDTO = new File();
-        queryDTO.setTenantId(tenantId).setBucketName(bucketName).setFileName(fileName).setFileUrl(minioUrl);
-        File file = fileMapper.selectOne(queryDTO);
-        return String.format(URL_FORMAT, FILE_GATEWAY_URL, tenantId, file.getFileId());
+        return fileService.uploadMultipart(tenantId, bucketName, null, directory, fileName, docType, storageCode, multipartFile);
     }
 
     @Override

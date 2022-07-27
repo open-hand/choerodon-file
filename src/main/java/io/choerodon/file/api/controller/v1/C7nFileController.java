@@ -66,15 +66,6 @@ public class C7nFileController {
         return Results.success(fileC7nService.uploadMultipart(organizationId, bucketName, null, directory, fileName, docType, storageCode, multipartFile, prefix));
     }
 
-    @Permission(permissionLogin = true, level = ResourceLevel.ORGANIZATION)
-    @ApiOperation(value = "下载文件")
-    @GetMapping("/{organizationId}/download/{file_id}")
-    public void downloadByUrl(
-            HttpServletRequest request, HttpServletResponse response,
-            @ApiParam(value = "租户ID", required = true) @PathVariable Long organizationId,
-            @ApiParam(value = "fileKey", required = true) @PathVariable("file_id") Long fileId) {
-        fileC7nService.downloadFile(request, response, organizationId, fileId);
-    }
 
     @Permission(permissionWithin = true)
     @ApiOperation(value = "根据文件id查询文件")
