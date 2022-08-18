@@ -11,7 +11,7 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_file.groovy') {
         if (helper.dbType().isSupportSequence()) {
             createSequence(sequenceName: 'hfle_file_s', startValue: "1")
         }
-        createTable(tableName: "hfle_file", remarks: "") {
+        createTable(tableName: "hfle_file", remarks: "文件上传记录表") {
             column(name: "file_id", type: "bigint", autoIncrement: true, remarks: "") { constraints(primaryKey: true) }
             column(name: "attachment_uuid", type: "varchar(" + 50 * weight + ")", defaultValue: "0", remarks: "附件集UUID") { constraints(nullable: "false") }
             column(name: "directory", type: "varchar(" + 60 * weight + ")", remarks: "上传目录")
