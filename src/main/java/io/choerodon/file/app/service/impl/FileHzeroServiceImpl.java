@@ -1,6 +1,12 @@
 package io.choerodon.file.app.service.impl;
 
-import io.choerodon.core.exception.CommonException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hzero.core.util.ValidUtils;
 import org.hzero.file.app.service.UploadConfigService;
@@ -13,18 +19,14 @@ import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.constant.HfleConstant;
 import org.hzero.file.infra.constant.HfleMessageConstant;
 import org.hzero.file.infra.util.ContentTypeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Validator;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import io.choerodon.core.exception.CommonException;
+import io.choerodon.file.app.service.FileC7nService;
 
 /**
  * 文件服务实现类
@@ -36,14 +38,15 @@ import java.nio.file.Paths;
 
 public class FileHzeroServiceImpl extends FileServiceImpl {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileHzeroServiceImpl.class);
-
     @Autowired
     private StoreFactory factory;
     @Autowired
     private Validator validator;
     @Autowired
     private UploadConfigHzeroServiceImpl uploadConfigHzeroService;
+    @Autowired
+    @Lazy
+    private FileC7nService fileC7nService;
 
     public FileHzeroServiceImpl(StoreFactory factory,
                                 FileRepository fileRepository,
@@ -84,4 +87,30 @@ public class FileHzeroServiceImpl extends FileServiceImpl {
             throw new CommonException(HfleMessageConstant.ERROR_FILE_UPDATE, e);
         }
     }
+
+    @Override
+    public Integer checkSlice(Long tenantId, String bucketName, String storageCode, Integer chunk, String guid) {
+        storageCode = fileC7nService.getStorageCode(storageCode);
+        return super.checkSlice(tenantId, bucketName, storageCode, chunk, guid);
+    }
+
+    @Override
+    public void uploadSlice(Long tenantId, String bucketName, String directory, String storageCode, String filename, String contentType, Integer chunk, String guid, MultipartFile multipartFile) {
+        storageCode = fileC7nService.getStorageCode(storageCode);
+        super.uploadSlice(tenantId, bucketName, directory, storageCode, filename, contentType, chunk, guid, multipartFile);
+    }
+
+    @Override
+    public void uploadByteSlice(Long tenantId, String bucketName, String directory, String storageCode, String filename, String contentType, Integer chunk, String guid, byte[] byteFile) {
+        storageCode = fileC7nService.getStorageCode(storageCode);
+        super.uploadByteSlice(tenantId, bucketName, directory, storageCode, filename, contentType, chunk, guid, byteFile);
+    }
+
+    @Override
+    public String combineSlice(Long tenantId, String bucketName, String directory, String storageCode, String filename, Long filesize, String contentType, String guid, String attachmentUuid) {
+        storageCode = fileC7nService.getStorageCode(storageCode);
+        return super.combineSlice(tenantId, bucketName, directory, storageCode, filename, filesize, contentType, guid, attachmentUuid);
+    }
+
+
 }

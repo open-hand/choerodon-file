@@ -4,7 +4,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hzero.file.api.dto.FileDTO;
 import org.hzero.file.domain.entity.File;
 import org.hzero.file.domain.entity.StorageConfig;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,7 +56,9 @@ public interface FileC7nService {
      * @param multipartFile  文件
      * @return 文件路径 文件服务地址+fileKey
      */
-    String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory, String fileName, Integer docType, String storageCode, MultipartFile multipartFile);
+    String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory,
+                           String fileName, Integer docType, String storageCode, MultipartFile multipartFile,
+                           String prefix);
 
 
     /**
@@ -106,4 +107,14 @@ public interface FileC7nService {
     File queryFileWithUrl(Long organizationId, String bucketName, String fileUrl);
 
     List<File> queryFileDTOByIds(Long organizationId, List<String> fileKeys);
+
+    void updateFile(Long organizationId, File file);
+
+    /**
+     * 大文件上传用文件夹唯一作为前缀方式
+     * 因为某些地方拼接的文件地址 不可设置默认存储code为文件夹前缀
+     * @param storageCode
+     * @return
+     */
+    String getStorageCode(String storageCode);
 }

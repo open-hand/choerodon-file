@@ -35,8 +35,6 @@ import io.choerodon.core.exception.CommonException;
  * @author shuangfei.zhu@hand-china.com 2018/09/20 11:25
  */
 public class UploadConfigHzeroServiceImpl extends UploadConfigServiceImpl {
-    private static final Logger logger = LoggerFactory.getLogger(UploadConfigHzeroServiceImpl.class);
-
     @Value("${choerodon.file.system.file-type}")
     private String systemFileType;
 

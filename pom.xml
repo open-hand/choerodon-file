@@ -5,10 +5,10 @@
     <parent>
         <groupId>io.choerodon</groupId>
         <artifactId>choerodon-framework-parent</artifactId>
-        <version>2.0.0.RELEASE</version>
+        <version>2.1.0.RELEASE</version>
     </parent>
     <artifactId>choerodon-file</artifactId>
-    <version>2.0.2.RELEASE</version>
+    <version>2.2.0-alpha.1.RELEASE</version>
     <name>choerodon-file</name>
     <description>File Service For Choerodon</description>
 
@@ -25,6 +25,10 @@
 <!--    </dependencyManagement>-->
 
     <dependencies>
+        <dependency>
+            <groupId>io.choerodon</groupId>
+            <artifactId>choerodon-starter-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
@@ -71,17 +75,6 @@
                     <artifactId>hzero-starter-market</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>2.7.15</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.spring</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>1.0.11</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

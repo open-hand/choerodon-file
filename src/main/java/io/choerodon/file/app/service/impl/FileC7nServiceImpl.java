@@ -1,5 +1,8 @@
 package io.choerodon.file.app.service.impl;
 
+import static io.choerodon.file.infra.constant.CommonConstant.FOLDER;
+import static io.choerodon.file.infra.constant.CommonConstant.STORAGE_CODE_FORMAT;
+
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
-import org.hzero.file.api.dto.FileDTO;
+import org.hzero.core.base.BaseConstants;
 import org.hzero.file.app.service.CapacityUsedService;
 import org.hzero.file.app.service.FileService;
 import org.hzero.file.domain.entity.File;
@@ -17,8 +20,6 @@ import org.hzero.file.domain.service.factory.StoreFactory;
 import org.hzero.file.domain.service.factory.StoreService;
 import org.hzero.file.infra.mapper.FileMapper;
 import org.hzero.file.infra.util.CodeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.choerodon.core.exception.CommonException;
 import io.choerodon.file.app.service.FileC7nService;
+import io.choerodon.file.infra.config.OssProperties;
 import io.choerodon.file.infra.mapper.C7nFileMapper;
 import io.choerodon.file.infra.utils.ImageUtils;
 
@@ -42,7 +44,6 @@ import io.choerodon.file.infra.utils.ImageUtils;
  */
 @Service
 public class FileC7nServiceImpl implements FileC7nService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileC7nServiceImpl.class);
 
     private static final String URL_FORMAT = "%s/choerodon/v1/%s/download/%s";
     @Value("${hzero.file.gateway-path}")
@@ -62,6 +63,8 @@ public class FileC7nServiceImpl implements FileC7nService {
     @Autowired
     @Qualifier("restTemplateForIp")
     private RestTemplate restTemplate;
+    @Autowired
+    private OssProperties ossProperties;
 
     @Override
     public String cutImage(Long tenantId, String bucketName, MultipartFile file, Double rotate, Integer axisX, Integer axisY, Integer width, Integer height) {
@@ -96,12 +99,12 @@ public class FileC7nServiceImpl implements FileC7nService {
     }
 
     @Override
-    public String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory, String fileName, Integer docType, String storageCode, MultipartFile multipartFile) {
-        String minioUrl = fileService.uploadMultipart(tenantId, bucketName, null, directory, fileName, docType, storageCode, multipartFile);
-        File queryDTO = new File();
-        queryDTO.setTenantId(tenantId).setBucketName(bucketName).setFileName(fileName).setFileUrl(minioUrl);
-        File file = fileMapper.selectOne(queryDTO);
-        return String.format(URL_FORMAT, FILE_GATEWAY_URL, tenantId, file.getFileId());
+    public String uploadMultipart(Long tenantId, String bucketName, String attachmentUuid, String directory, String fileName,
+                                  Integer docType, String storageCode, MultipartFile multipartFile, String prefix) {
+        if (prefix.equalsIgnoreCase("folder")) {
+            storageCode = getStorageCode(storageCode);
+        }
+        return fileService.uploadMultipart(tenantId, bucketName, null, directory, fileName, docType, storageCode, multipartFile);
     }
 
     @Override
@@ -143,5 +146,25 @@ public class FileC7nServiceImpl implements FileC7nService {
             return Collections.EMPTY_LIST;
         }
         return c7nFileMapper.queryFileByKeys(organizationId, fileKeys);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateFile(Long organizationId, File file) {
+        File fileDTO = fileMapper.selectByPrimaryKey(file.getFileId());
+        if (fileDTO == null) {
+            return;
+        }
+        fileDTO.setFileName(file.getFileName());
+        fileMapper.updateByPrimaryKey(fileDTO);
+    }
+
+    @Override
+    public String getStorageCode(String storageCode) {
+        if (StringUtils.isEmpty(storageCode)) {
+            return String.format(STORAGE_CODE_FORMAT, ossProperties.getType() + BaseConstants.Symbol.MIDDLE_LINE + FOLDER);
+        } else {
+            return storageCode;
+        }
     }
 }
