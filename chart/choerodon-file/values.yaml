@@ -199,7 +199,7 @@ extraEnv:
   OSS_ENDPOINT: http://minio.example.com/minio # oss 地址
   OSS_ACCESSKEY: accessKey # 账号
   OSS_SECRETKEY: secretKey # 密码
-  OSS_DOMIAN: # 域名地址阿里云使用,可不填，默认为null
+  OSS_DOMAIN: # 域名地址阿里云使用,可不填，默认为null
   OSS_REGION: # Bucket所属地区华为云使用,可不填，默认为null
   OSS_PREFIX: # Bucket前缀，可根据需要添加，默认为null
   # JAVA_OPTS: >-
