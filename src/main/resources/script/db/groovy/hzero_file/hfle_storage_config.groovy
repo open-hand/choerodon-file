@@ -11,7 +11,7 @@ databaseChangeLog(logicalFilePath: 'script/db/hfle_storage_config.groovy') {
         if (helper.dbType().isSupportSequence()) {
             createSequence(sequenceName: 'hfle_storage_config_s', startValue: "1")
         }
-        createTable(tableName: "hfle_storage_config", remarks: "") {
+        createTable(tableName: "hfle_storage_config", remarks: "文件存储配置表") {
             column(name: "storage_config_id", type: "bigint", autoIncrement: true, remarks: "") { constraints(primaryKey: true) }
             column(name: "storage_type", type: "tinyint", remarks: "类型 1:阿里 2:华为 3:Minio 4:腾讯 5:七牛") { constraints(nullable: "false") }
             column(name: "domain", type: "varchar(" + 120 * weight + ")", remarks: "绑定的域名")
